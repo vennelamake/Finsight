@@ -1,0 +1,278 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="mb-4">
+
+        <a href="/dashboard" class="btn btn-outline-primary">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Dashboard
+
+        </a>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>
+
+                <i class="fa-solid fa-bullseye"></i>
+
+                Financial Goal Planning
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST" action="/goals">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Goal Name
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="goal_name"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Target Amount
+
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            name="target_amount"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Saved Amount
+
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            name="saved_amount"
+                            value="0">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+
+                            Target Date
+
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="target_date"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Create Goal
+
+                </button>
+
+            </form>
+
+            <hr>
+
+            <h4 class="mb-3">
+
+                Goal History
+
+            </h4>
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Goal</th>
+                        <th>Target</th>
+                        <th>Saved</th>
+                        <th>Progress</th>
+                        <th>Target Date</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% if goals %}
+
+                        {% for goal in goals %}
+
+                        <tr>
+
+                            <td>{{ goal.goal_name }}</td>
+
+                            <td>₹{{ goal.target_amount }}</td>
+
+                            <td>₹{{ goal.saved_amount }}</td>
+
+                            <td>
+
+                                <div class="progress mb-2" style="height:22px;">
+
+                                    <div
+                                        class="progress-bar
+
+                                        {% if goal.progress >= 100 %}
+
+                                            bg-success
+
+                                        {% elif goal.progress >= 50 %}
+
+                                            bg-info
+
+                                        {% else %}
+
+                                            bg-warning
+
+                                        {% endif %}"
+
+                                        style="width: {{ goal.progress }}%;">
+
+                                        {{ goal.progress }}%
+
+                                    </div>
+
+                                </div>
+
+                                {% if goal.status == "Completed" %}
+
+                                    <span class="badge bg-success">
+
+                                        Completed
+
+                                    </span>
+
+                                {% elif goal.status == "On Track" %}
+
+                                    <span class="badge bg-primary">
+
+                                        On Track
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Needs Attention
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>{{ goal.target_date }}</td>
+
+                            <td>
+
+                                <a href="/save-goal/{{ goal.goal_id }}"
+                                    class="btn btn-success btn-sm">
+
+                                    <i class="fa-solid fa-piggy-bank"></i>
+
+                                    Save More
+
+                                </a>
+
+                                <a href="/update-goal/{{ goal.goal_id }}"
+                                    class="btn btn-warning btn-sm">
+
+                                    Edit
+
+                                </a>
+
+                                    <a href="/delete-goal/{{ goal.goal_id }}"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Delete this goal?')">
+
+                                        Delete
+
+                                    </a>
+
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="6" class="text-center py-5">
+
+                                <i class="fa-solid fa-bullseye fa-3x text-muted mb-3"></i>
+
+                                <h5>No Financial Goals Created</h5>
+
+                                <p class="text-muted">
+
+                                    Create your first financial goal to start tracking your savings.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                    {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

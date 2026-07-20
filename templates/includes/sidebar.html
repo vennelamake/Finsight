@@ -1,0 +1,136 @@
+<div class="sidebar">
+
+    <div class="logo">
+
+        <h2>FinSight</h2>
+
+        <p>Your Financial Clarity</p>
+
+    </div>
+
+    <ul>
+
+        <li class="active">
+            <a href="/dashboard">
+                <i class="fa-solid fa-chart-line"></i>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="/expenses">
+                <i class="fa-solid fa-wallet"></i>
+                Expenses
+            </a>
+        </li>
+
+        <li>
+            <a href="/budgets">
+                <i class="fa-solid fa-piggy-bank"></i>
+                Budgets
+            </a>
+        </li>
+
+        <li>
+            <a href="/income">
+                <i class="fa-solid fa-money-bill-wave"></i>
+                Income
+            </a>
+        </li>
+
+        <li>
+            <a href="/investments">
+                <i class="fa-solid fa-chart-column"></i>
+                Investments
+            </a>
+        </li>
+
+        <li>
+            <a href="/goals">
+                <i class="fa-solid fa-bullseye"></i>
+                Financial Goals
+            </a>
+        </li>
+
+        <li>
+            <a href="/analytics">
+                <i class="fa-solid fa-chart-pie"></i>
+                Analytics
+            </a>
+        </li>
+
+        <li>
+            <a href="/reports">
+                <i class="fa-solid fa-file-lines"></i>
+                Reports
+            </a>
+        </li>
+
+        <li>
+            <a href="/settings">
+                <i class="fa-solid fa-gear"></i>
+                Settings
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="monthly-overview">
+
+        <h5>Monthly Overview</h5>
+
+        <small>{{ now().strftime('%B %Y') if false else "Current Month" }}</small>
+
+        <div class="overview-item">
+
+            <span>Income</span>
+
+            <strong>₹{{ monthly_income }}</strong>
+
+        </div>
+
+        <div class="overview-item">
+
+            <span>Expenses</span>
+
+            <strong>₹{{ monthly_expense }}</strong>
+
+        </div>
+
+        <div class="overview-item">
+
+            <span>Savings</span>
+
+            <strong>₹{{ monthly_savings }}</strong>
+
+        </div>
+
+        <div class="overview-item">
+
+            <span>Budget Utilization</span>
+
+            <strong>{{ budget_percentage }}%</strong>
+
+        </div>
+
+        <div class="progress mt-2">
+
+            <div class="progress-bar bg-success"
+
+                 style="width:{{ budget_percentage }}%">
+
+            </div>
+
+        </div>
+
+        <a href="/expenses" class="btn btn-outline-primary w-100 mt-3">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Add Transaction
+
+        </a>
+
+    </div>
+
+</div>

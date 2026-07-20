@@ -1,0 +1,132 @@
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-body py-2">
+
+        <ul class="nav nav-tabs border-0">
+
+            <li class="nav-item">
+
+                <a class="nav-link
+                {% if request.endpoint=='analytics' %}
+                active
+                {% endif %}"
+
+                href="{{ url_for('analytics') }}">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    Overview
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link
+                {% if request.endpoint=='spending_analysis' %}
+                active
+                {% endif %}"
+
+                href="{{ url_for('spending_analysis') }}">
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                    Spending Analysis
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link
+                {% if request.endpoint=='budget_recommendations' %}
+                active
+                {% endif %}"
+
+                href="{{ url_for('budget_recommendations') }}">
+
+                    <i class="fa-solid fa-wallet"></i>
+
+                    Budget Recommendations
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link
+                {% if request.endpoint=='health_score' %}
+                active
+                {% endif %}"
+
+                href="{{ url_for('health_score') }}">
+
+                    <i class="fa-solid fa-heart-pulse"></i>
+
+                    Health Score
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link
+                {% if request.endpoint=='trends_predictions' %}
+                active
+                {% endif %}"
+
+                href="{{ url_for('trends_predictions') }}">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    Trends & Predictions
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<style>
+
+.nav-tabs .nav-link{
+
+    color:#495057;
+
+    font-weight:600;
+
+    border:none;
+
+    border-bottom:3px solid transparent;
+
+}
+
+.nav-tabs .nav-link:hover{
+
+    color:#0d6efd;
+
+    border-bottom:3px solid #0d6efd;
+
+}
+
+.nav-tabs .nav-link.active{
+
+    color:#0d6efd;
+
+    background:white;
+
+    border:none;
+
+    border-bottom:3px solid #0d6efd;
+
+}
+
+</style>

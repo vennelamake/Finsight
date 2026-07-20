@@ -1,0 +1,55 @@
+body{
+
+    background:#f4f7fb;
+
+    font-family:Poppins,sans-serif;
+
+}
+
+.expense-card{
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+h2{
+
+    color:#2563eb;
+
+    margin-bottom:25px;
+
+    font-weight:700;
+
+}
+
+.form-control{
+
+    height:48px;
+
+    border-radius:10px;
+
+}
+
+textarea.form-control{
+
+    height:120px;
+
+}
+
+.btn-primary{
+
+    background:#2563eb;
+
+    border:none;
+
+    padding:12px 30px;
+
+    border-radius:10px;
+
+}

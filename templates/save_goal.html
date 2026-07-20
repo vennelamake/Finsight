@@ -1,0 +1,100 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h3>
+
+                <i class="fa-solid fa-piggy-bank"></i>
+
+                Add Savings
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Goal Name
+
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ goal.goal_name }}"
+                        readonly>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Current Saved Amount
+
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="₹ {{ '%.2f'|format(goal.saved_amount) }}"
+                        readonly>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Amount to Add
+
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        name="amount"
+                        placeholder="Enter amount"
+                        required>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Savings
+
+                </button>
+
+                <a href="{{ url_for('goals') }}"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ====================================================== -->
+<!-- HEAD SECTION START -->
+<!-- ====================================================== -->
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications | FinSight</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<!-- ====================================================== -->
+<!-- HEAD SECTION END -->
+<!-- ====================================================== -->
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+<!-- ====================================================== -->
+<!-- PAGE HEADER -->
+<!-- ====================================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>
+
+        <i class="fa-solid fa-bell text-warning"></i>
+
+        Notifications
+
+    </h2>
+
+    <a href="{{ url_for('dashboard') }}"
+       class="btn btn-outline-primary">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Dashboard
+
+    </a>
+
+</div>
+
+<!-- ====================================================== -->
+<!-- NOTIFICATIONS LIST -->
+<!-- ====================================================== -->
+
+{% if notifications %}
+
+    {% for notification in notifications %}
+
+    <div class="card shadow-sm mb-3 border-0">
+
+        <div class="card-body">
+
+            <div class="d-flex align-items-center">
+
+                {% if notification.type=="success" %}
+
+                    <i class="fa-solid fa-circle-check
+                              text-success
+                              fa-2x me-3"></i>
+
+                {% elif notification.type=="warning" %}
+
+                    <i class="fa-solid fa-triangle-exclamation
+                              text-warning
+                              fa-2x me-3"></i>
+
+                {% elif notification.type=="danger" %}
+
+                    <i class="fa-solid fa-circle-xmark
+                              text-danger
+                              fa-2x me-3"></i>
+
+                {% else %}
+
+                    <i class="fa-solid fa-circle-info
+                              text-primary
+                              fa-2x me-3"></i>
+
+                {% endif %}
+
+                <div>
+
+                    <h5 class="mb-1">
+
+                        {{ notification.title }}
+
+                    </h5>
+
+                    <p class="mb-0 text-muted">
+
+                        {{ notification.message }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div class="alert alert-success">
+
+    No notifications available.
+
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+
+</html>

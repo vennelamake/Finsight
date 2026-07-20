@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+
+    background:#f4f7fb;
+
+}
+
+.container{
+
+    max-width:1000px;
+
+}
+
+.profile-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.profile-header{
+
+    text-align:center;
+
+    margin-bottom:40px;
+
+}
+
+.profile-image{
+
+    width:140px;
+
+    height:140px;
+
+    border-radius:50%;
+
+    border:5px solid #2563eb;
+
+    object-fit:cover;
+
+    margin-bottom:15px;
+
+}
+
+.profile-header h2{
+
+    font-weight:700;
+
+    color:#1e293b;
+
+}
+
+.profile-header p{
+
+    color:#64748b;
+
+}
+
+label{
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+.form-control{
+
+    height:48px;
+
+    border-radius:10px;
+
+}
+
+textarea.form-control{
+
+    height:120px;
+
+}
+
+.btn-primary{
+
+    background:#2563eb;
+
+    border:none;
+
+    padding:12px 30px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+}
+
+.btn-primary:hover{
+
+    background:#1d4ed8;
+
+}

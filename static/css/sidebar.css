@@ -1,0 +1,189 @@
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#f5f7fb;
+}
+
+.main-container{
+    display:flex;
+}
+
+.sidebar{
+
+    width:260px;
+    height:100vh;
+
+    background:white;
+
+    position:fixed;
+
+    left:0;
+    top:0;
+
+    border-right:1px solid #e5e7eb;
+
+    overflow-y:auto;
+
+}
+
+.logo{
+
+    padding:25px;
+
+    border-bottom:1px solid #ececec;
+
+}
+
+.logo h2{
+
+    margin:0;
+
+    color:#2563eb;
+
+    font-size:30px;
+
+}
+
+.logo p{
+
+    margin-top:5px;
+
+    color:#888;
+
+    font-size:13px;
+
+}
+
+.sidebar ul{
+
+    list-style:none;
+
+    padding:15px;
+
+    margin:0;
+
+}
+
+.sidebar li{
+
+    margin-bottom:8px;
+
+}
+
+.sidebar a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 16px;
+
+    text-decoration:none;
+
+    color:#374151;
+
+    border-radius:12px;
+
+    font-weight:500;
+
+    transition:.3s;
+
+}
+
+.sidebar a i{
+
+    width:22px;
+
+    text-align:center;
+
+}
+
+.sidebar a:hover{
+
+    background:#edf4ff;
+
+    color:#2563eb;
+
+}
+
+.sidebar .active a{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+/* Monthly Overview */
+
+.monthly-overview{
+
+    margin:18px;
+
+    background:#f8fafc;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:15px;
+
+    padding:18px;
+
+}
+
+.monthly-overview h5{
+
+    margin-bottom:5px;
+
+}
+
+.monthly-overview small{
+
+    color:#777;
+
+}
+
+.overview-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:12px;
+
+    font-size:14px;
+
+}
+
+.overview-item strong{
+
+    color:#111827;
+
+}
+
+.monthly-overview .progress{
+
+    height:10px;
+
+    margin-top:15px;
+
+}
+
+.monthly-overview .btn{
+
+    margin-top:18px;
+
+    border-radius:10px;
+
+}
+
+.content{
+
+    margin-left:260px;
+
+    width:calc(100% - 260px);
+
+    padding:25px;
+
+}

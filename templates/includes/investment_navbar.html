@@ -1,0 +1,89 @@
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+
+    <div class="card-body p-2">
+
+        <ul class="nav nav-pills nav-fill">
+
+            <li class="nav-item">
+
+                <a class="nav-link py-3 fw-semibold {% if request.endpoint=='investments' %}active{% endif %}"
+                   href="/investments">
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                    Portfolio Overview
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link py-3 fw-semibold {% if request.endpoint=='add_investment' %}active{% endif %}"
+                href="/add-investment">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Add Investment
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link py-3 fw-semibold {% if request.endpoint=='holdings' %}active{% endif %}"
+                   href="/holdings">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+                    Holdings
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link py-3 fw-semibold {% if request.endpoint=='transactions' %}active{% endif %}"
+                   href="/transactions">
+
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+
+                    Transactions
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link py-3 fw-semibold {% if request.endpoint=='asset_allocation' %}active{% endif %}"
+                   href="/asset-allocation">
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
+                    Asset Allocation
+
+                </a>
+
+            </li>
+
+            <li class="nav-item">
+
+                <a class="nav-link py-3 fw-semibold {% if request.endpoint=='performance' %}active{% endif %}"
+                   href="/performance">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    Performance
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>

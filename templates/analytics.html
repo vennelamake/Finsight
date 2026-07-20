@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Analytics Overview | FinSight</title>
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- FontAwesome -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- ChartJS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+
+    background:#f5f7fb;
+
+    font-family:"Segoe UI",sans-serif;
+
+}
+
+/* -------------------- Cards -------------------- */
+
+.dashboard-card{
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.dashboard-card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.section-header{
+
+    background:linear-gradient(90deg,#1663d6,#3b82f6);
+
+    color:#fff;
+
+    padding:14px 20px;
+
+    border-radius:18px 18px 0 0;
+
+}
+
+.section-header h5{
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:600;
+
+}
+
+.summary-card{
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    min-height:170px;
+
+}
+
+.summary-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.summary-icon{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:26px;
+
+}
+
+.card-body{
+
+    padding:30px;
+
+}
+
+.progress{
+
+    height:12px;
+
+    border-radius:20px;
+
+}
+
+.factor-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:10px;
+
+    font-size:14px;
+
+}
+
+.insight-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    background:#f8f9fc;
+
+    margin-bottom:12px;
+
+}
+
+.insight-item i{
+
+    font-size:22px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container py-4">
+
+<!-- ===================================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold">
+
+            <i class="fa-solid fa-chart-line text-primary"></i>
+
+            Analytics & Intelligence
+
+        </h2>
+
+        <small class="text-muted">
+
+            Monitor your complete financial performance
+
+        </small>
+
+    </div>
+
+    <a href="{{ url_for('dashboard') }}"
+
+       class="btn btn-primary">
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+        Dashboard
+
+    </a>
+
+</div>
+
+{% include "includes/analytics_navbar.html" %}
+
+<br>
+
+<!-- ===================================================== -->
+<!-- SUMMARY CARDS START -->
+<!-- ===================================================== -->
+
+<div class="row g-4 mb-4">
+
+    <!-- Monthly Savings -->
+
+    <div class="col-lg-3">
+
+        <div class="card summary-card h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Monthly Savings
+
+                        </small>
+
+                        <h3 class="fw-bold text-success mt-2">
+
+                            ₹ {{ "%.2f"|format(total_income-total_expense) }}
+
+                        </h3>
+
+                        <small class="text-success">
+
+                            ▲ Good Position
+
+                        </small>
+
+                    </div>
+
+                    <div class="summary-icon bg-success">
+
+                        <i class="fa-solid fa-piggy-bank"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Avg Expense -->
+
+    <div class="col-lg-3">
+
+        <div class="card summary-card h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Avg. Expenses
+
+                        </small>
+
+                        <h3 class="fw-bold text-danger mt-2">
+
+                            ₹ {{ "%.2f"|format(total_expense) }}
+
+                        </h3>
+
+                        <small class="text-danger">
+
+                            Total Expenses
+
+                        </small>
+
+                    </div>
+
+                    <div class="summary-icon bg-danger">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Projected Balance -->
+
+    <div class="col-lg-3">
+
+        <div class="card summary-card h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Projected Balance
+
+                        </small>
+
+                        <h3 class="fw-bold text-primary mt-2">
+
+                            ₹ {{ "%.2f"|format((total_income-total_expense)+total_investment) }}
+
+                        </h3>
+
+                        <small class="text-primary">
+
+                            Savings + Investments
+
+                        </small>
+
+                    </div>
+
+                    <div class="summary-icon bg-primary">
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Goals -->
+
+    <div class="col-lg-3">
+
+        <div class="card summary-card h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <div>
+
+                        <small class="text-muted">
+
+                            Active Goals
+
+                        </small>
+
+                        <h3 class="fw-bold text-warning mt-2">
+
+                            {{ total_goals }}
+
+                        </h3>
+
+                        <small class="text-warning">
+
+                            {{ completed_goals }} Completed
+
+                        </small>
+
+                    </div>
+
+                    <div class="summary-icon bg-warning">
+
+                        <i class="fa-solid fa-bullseye"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- SUMMARY CARDS END -->
+<!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!-- HEALTH SCORE + SPENDING PATTERN START -->
+<!-- ===================================================== -->
+
+<div class="row g-4 mb-4">
+
+    <!-- ================================================= -->
+    <!-- HEALTH SCORE -->
+    <!-- ================================================= -->
+
+    <div class="col-lg-3">
+
+        <div class="card dashboard-card">
+
+            <div class="section-header">
+
+                <h5>
+
+                    <i class="fa-solid fa-heart-pulse me-2"></i>
+
+                    Financial Health Score
+
+                </h5>
+
+            </div>
+
+            <div class="card-body text-center">
+
+                <!-- Gauge -->
+
+                <div class="position-relative mx-auto mb-1"
+                     style="width:210px;height:100px;">
+
+                    <canvas id="healthGauge"></canvas>
+
+                    <div class="position-absolute start-50 translate-middle-x"
+                        style="top:30%;">
+
+                        <h1 class="fw-bold text-primary mb-0">
+
+                            {{ health_score }}
+
+                        </h1>
+
+                        <small class="badge
+                        {% if health_score>=80 %}
+                        bg-success
+                        {% elif health_score>=60 %}
+                        bg-warning text-dark
+                        {% else %}
+                        bg-danger
+                        {% endif %}
+                        ">
+
+                            {{ health_status }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h6 class="fw-bold text-start">
+
+                    Health Score Factors
+
+                </h6>
+
+                <div class="factor-item">
+
+                    <span>
+
+                        <i class="fa-solid fa-piggy-bank text-success"></i>
+
+                        Savings
+
+                    </span>
+
+                    <strong>
+
+                        {{ (health_score+5) if health_score<95 else 100 }}/100
+
+                    </strong>
+
+                </div>
+
+                <div class="progress mb-1">
+
+                    <div class="progress-bar bg-success"
+
+                         style="width:{{ (health_score+5) if health_score<95 else 100 }}%">
+
+                    </div>
+
+                </div>
+
+                <div class="factor-item">
+
+                    <span>
+
+                        <i class="fa-solid fa-chart-line text-primary"></i>
+
+                        Investments
+
+                    </span>
+
+                    <strong>
+
+                        {{ (health_score-5) if health_score>5 else health_score }}/100
+
+                    </strong>
+
+                </div>
+
+                <div class="progress mb-1">
+
+                    <div class="progress-bar bg-primary"
+
+                         style="width:{{ (health_score-5) if health_score>5 else health_score }}%">
+
+                    </div>
+
+                </div>
+
+                <div class="factor-item">
+
+                    <span>
+
+                        <i class="fa-solid fa-wallet text-warning"></i>
+
+                        Budget
+
+                    </span>
+
+                    <strong>
+
+                        {{ health_score }}/100
+
+                    </strong>
+
+                </div>
+
+                <div class="progress mb-1">
+
+                    <div class="progress-bar bg-warning"
+
+                         style="width:{{ health_score }}%">
+
+                    </div>
+
+                </div>
+
+                <div class="factor-item">
+
+                    <span>
+
+                        <i class="fa-solid fa-money-bill-wave text-danger"></i>
+
+                        Expenses
+
+                    </span>
+
+                    <strong>
+
+                        {{ (health_score-10) if health_score>10 else health_score }}/100
+
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div class="progress-bar bg-danger"
+
+                         style="width:{{ (health_score-10) if health_score>10 else health_score }}%">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- SPENDING PATTERN -->
+    <!-- ================================================= -->
+
+    <div class="col-lg-9">
+
+        <div class="card dashboard-card">
+
+            <div class="section-header">
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Spending Pattern Analysis
+                    </h4>
+
+                    <select id="yearFilter"
+                            class="form-select form-select-sm"
+                            style="width:100px;">
+                        <option value="2026" {% if selected_year == 2026 %}selected{% endif %}>2026</option>
+                        <option value="2025" {% if selected_year == 2025 %}selected{% endif %}>2025</option>
+                        <option value="2024" {% if selected_year == 2024 %}selected{% endif %}>2024</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-9">
+
+                        <div style="height:320px;">
+
+                            <canvas id="expenseChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        {% for i in range(expense_labels|length) %}
+
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+
+                            <div>
+
+                                <span class="fw-semibold">
+
+                                    {{ expense_labels[i] }}
+
+                                </span>
+
+                            </div>
+
+                            <div class="text-end">
+
+                                <strong>
+
+                                    ₹ {{ "%.2f"|format(expense_values[i]) }}
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+                        <div class="mt-4">
+
+                            <a href="{{ url_for('spending_analysis') }}"
+                                class="text-decoration-none">
+
+                                    View Full Analysis
+
+                                    <i class="fa-solid fa-arrow-right"></i>
+
+                                </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- HEALTH SCORE + SPENDING PATTERN END -->
+<!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!-- CASH FLOW + BUDGET RECOMMENDATIONS START -->
+<!-- ===================================================== -->
+
+<div class="row g-4 mb-4">
+
+    <!-- =============================================== -->
+    <!-- CASH FLOW -->
+    <!-- =============================================== -->
+
+    <div class="col-lg-9">
+
+        <div class="card dashboard-card">
+
+            <div class="section-header">
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Yearly Cash Flow Analysis
+                    </h4>
+
+                    <select id="yearFilter"
+                            class="form-select form-select-sm"
+                            style="width: 100px;">
+                        <option value="2026" {% if selected_year == 2026 %}selected{% endif %}>2026</option>
+                        <option value="2025" {% if selected_year == 2025 %}selected{% endif %}>2025</option>
+                        <option value="2024" {% if selected_year == 2024 %}selected{% endif %}>2024</option>
+                    </select>
+
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                <div style="height:320px;">
+
+                    <canvas id="cashFlowChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =============================================== -->
+    <!-- BUDGET RECOMMENDATIONS -->
+    <!-- =============================================== -->
+
+    <div class="col-lg-3">
+
+        <div class="card dashboard-card">
+
+            <div class="section-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5>
+
+                        <i class="fa-solid fa-wallet me-2"></i>
+
+                        Budget Recommendations
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% for recommendation in budget_recommendations %}
+
+                <div class="alert alert-info mb-3">
+
+                    <i class="fa-solid fa-lightbulb me-2"></i>
+
+                    {{ recommendation }}
+
+                </div>
+
+                {% endfor %}
+                <div class="text-end mt-3">
+
+                    <a href="{{ url_for('budget_recommendations') }}"
+                        class="text-decoration-none fw-semibold">
+
+                            View More Recommendations
+
+                            <i class="fa-solid fa-arrow-right"></i>
+
+                        </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- CASH FLOW + BUDGET RECOMMENDATIONS END -->
+<!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!-- AI INSIGHTS + ALERTS START -->
+<!-- ===================================================== -->
+
+<div class="row g-4 mb-4">
+
+    <!-- ================================================= -->
+    <!-- AI INSIGHTS -->
+    <!-- ================================================= -->
+
+    <div class="col-lg-9">
+
+        <div class="card dashboard-card">
+
+            <div class="section-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5>
+
+                        <i class="fa-solid fa-lightbulb me-2"></i>
+
+                        Financial Insights
+
+                    </h5>
+
+                    
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% for insight in financial_insights %}
+
+                <div class="insight-item">
+
+                    <i class="fa-solid fa-lightbulb text-warning"></i>
+
+                    <div>
+
+                        <strong>Financial Insight</strong>
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            {{ insight }}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- ALERTS -->
+    <!-- ================================================= -->
+
+    <div class="col-lg-3">
+
+        <div class="card dashboard-card">
+
+            <div class="section-header">
+
+                <h5>
+
+                    <i class="fa-solid fa-bell me-2"></i>
+
+                    Alerts & Notifications
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                {% if total_income>total_expense %}
+
+                <div class="alert alert-success">
+
+                    <i class="fa-solid fa-circle-check me-2"></i>
+
+                    Excellent! Your income exceeds expenses.
+
+                </div>
+
+                {% endif %}
+
+                {% if total_expense>total_budget and total_budget>0 %}
+
+                <div class="alert alert-danger">
+
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>
+
+                    Budget exceeded this month.
+
+                </div>
+
+                {% endif %}
+
+                {% if total_goals==0 %}
+
+                <div class="alert alert-warning">
+
+                    <i class="fa-solid fa-bullseye me-2"></i>
+
+                    Create your first financial goal.
+
+                </div>
+
+                {% endif %}
+
+                {% if total_investment==0 %}
+
+                <div class="alert alert-info">
+
+                    <i class="fa-solid fa-chart-line me-2"></i>
+
+                    Start investing for long-term growth.
+
+                </div>
+
+                {% endif %}
+
+                <hr>
+
+                <h6 class="fw-bold">
+
+                    Quick Summary
+
+                </h6>
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+
+                        Income
+
+                        <span class="float-end fw-bold">
+
+                            ₹ {{ "%.2f"|format(total_income) }}
+
+                        </span>
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        Expenses
+
+                        <span class="float-end fw-bold">
+
+                            ₹ {{ "%.2f"|format(total_expense) }}
+
+                        </span>
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        Investments
+
+                        <span class="float-end fw-bold">
+
+                            ₹ {{ "%.2f"|format(total_investment) }}
+
+                        </span>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- AI INSIGHTS + ALERTS END -->
+<!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!-- CHART JS -->
+<!-- ===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ============================================
+       HEALTH SCORE GAUGE
+    ============================================ */
+
+    const gaugeCanvas = document.getElementById("healthGauge");
+
+    if (gaugeCanvas) {
+
+        new Chart(gaugeCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                datasets: [{
+
+                    data: [
+
+                        {{ health_score }},
+
+                        {{ 100-health_score }}
+
+                    ],
+
+                    backgroundColor: [
+
+                        "#0d6efd",
+
+                        "#e9ecef"
+
+                    ],
+
+                    borderWidth: 0,
+
+                    radius:"95%",
+
+                    cutout: "72%"
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                rotation: -90,
+
+                circumference: 180,
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    },
+
+                    tooltip: {
+
+                        enabled: false
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    /* ============================================
+       SPENDING PATTERN
+    ============================================ */
+
+    const expenseCanvas = document.getElementById("expenseChart");
+
+    if (expenseCanvas) {
+
+        new Chart(expenseCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: {{ expense_labels|tojson }},
+
+                datasets: [{
+
+                    data: {{ expense_values|tojson }},
+
+                    backgroundColor: [
+
+                        "#0d6efd",
+
+                        "#198754",
+
+                        "#ffc107",
+
+                        "#dc3545",
+
+                        "#6f42c1",
+
+                        "#20c997",
+
+                        "#fd7e14",
+
+                        "#6c757d"
+
+                    ],
+
+                    borderWidth: 2
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    /* ============================================
+       CASH FLOW
+    ============================================ */
+
+    const cashCanvas = document.getElementById("cashFlowChart");
+
+    if (cashCanvas) {
+
+        new Chart(cashCanvas, {
+
+            type: "line",
+
+            data: {
+
+                labels: {{ months|tojson }},
+
+                datasets: [
+
+                    {
+
+                        label: "Income",
+
+                        data: {{ income_data|tojson }},
+
+                        borderColor: "#198754",
+
+                        backgroundColor: "#198754",
+
+                        tension: .4,
+
+                        fill: false
+
+                    },
+
+                    {
+
+                        label: "Expenses",
+
+                        data: {{ expense_data|tojson }},
+
+                        borderColor: "#dc3545",
+
+                        backgroundColor: "#dc3545",
+
+                        tension: .4,
+
+                        fill: false
+
+                    },
+
+                    {
+
+                        label: "Savings",
+
+                        data: {{ saving_data|tojson }},
+
+                        borderColor: "#0d6efd",
+
+                        backgroundColor: "#0d6efd",
+
+                        tension: .4,
+
+                        fill: false
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+
+                    mode: "index",
+
+                    intersect: false
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top"
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.getElementById("yearFilter").addEventListener("change", function () {
+    window.location.href = "/analytics?year=" + this.value;
+});
+</script>
+</div>
+
+</body>
+
+</html>

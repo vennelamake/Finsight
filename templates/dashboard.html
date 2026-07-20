@@ -1,0 +1,488 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+
+    <!-- Top Cards -->
+
+    <div class="row g-4">
+
+        <!-- Income -->
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Total Income
+
+                            </h6>
+
+                            <h3 class="text-success">
+
+                                ₹{{ income }}
+
+                            </h3>
+
+                            <small>This Month</small>
+
+                        </div>
+
+                        <i class="fa-solid fa-wallet fa-3x text-success"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Expense -->
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Total Expenses
+
+                            </h6>
+
+                            <h3 class="text-danger">
+
+                                ₹{{ expense }}
+
+                            </h3>
+
+                            <small>This Month</small>
+
+                        </div>
+
+                        <i class="fa-solid fa-money-bill-wave fa-3x text-danger"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Savings -->
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Savings
+
+                            </h6>
+
+                            <h3 class="text-primary">
+
+                                ₹{{ savings }}
+
+                            </h3>
+
+                            <small>This Month</small>
+
+                        </div>
+
+                        <i class="fa-solid fa-piggy-bank fa-3x text-primary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Budget -->
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h6 class="text-muted">
+
+                                Budget Used
+
+                            </h6>
+
+                            <h3 class="text-warning">
+
+                                {{ budget_used }}%
+
+                            </h3>
+
+                            <small>This Month</small>
+
+                        </div>
+
+                        <i class="fa-solid fa-chart-pie fa-3x text-warning"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Charts -->
+
+    <div class="row mt-4">
+
+        <!-- Expense Breakdown -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-header bg-white">
+
+                    <form method="GET" action="/dashboard">
+
+                        <input
+                            type="hidden"
+                            name="trend_filter"
+                            value="{{ trend_filter }}">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <h5 class="mb-0">
+
+                                Expense Breakdown
+
+                            </h5>
+
+                            <select
+                                class="form-select w-auto"
+                                name="expense_filter"
+                                onchange="this.form.submit()">
+
+                                <option value="this_month"
+                                    {% if expense_filter == "this_month" %}selected{% endif %}>
+                                    This Month
+                                </option>
+
+                                <option value="last_month"
+                                    {% if expense_filter == "last_month" %}selected{% endif %}>
+                                    Last Month
+                                </option>
+
+                                <option value="last_3_months"
+                                    {% if expense_filter == "last_3_months" %}selected{% endif %}>
+                                    Last 3 Months
+                                </option>
+
+                                <option value="custom"
+                                    {% if expense_filter == "custom" %}selected{% endif %}>
+                                    Custom Range
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        {% if expense_filter == "custom" %}
+
+                        <div class="row mt-3">
+
+                            <div class="col">
+
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="start_date"
+                                    value="{{ start_date }}">
+
+                            </div>
+
+                            <div class="col">
+
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    name="end_date"
+                                    value="{{ end_date }}">
+
+                            </div>
+
+                            <div class="col-auto">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary">
+
+                                    Apply
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        {% endif %}
+
+                        
+
+                    </form>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="expenseChart" height="300"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+<!-- Monthly Trend -->
+
+<div class="col-lg-6 mb-4">
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+        <div class="card-header bg-white">
+
+            <form method="GET" action="/dashboard">
+
+                <input
+                    type="hidden"
+                    name="expense_filter"
+                    value="{{ expense_filter }}">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5 class="mb-0">
+
+                        Monthly Trend
+
+                    </h5>
+
+                    <select
+                        class="form-select w-auto"
+                        name="trend_filter"
+                        onchange="this.form.submit()">
+
+                        <option value="this_month"
+                            {% if trend_filter=="this_month" %}selected{% endif %}>
+                            This Month
+                        </option>
+
+                        <option value="last_month"
+                            {% if trend_filter=="last_month" %}selected{% endif %}>
+                            Last Month
+                        </option>
+
+                        <option value="last_3_months"
+                            {% if trend_filter=="last_3_months" %}selected{% endif %}>
+                            Last 3 Months
+                        </option>
+
+                        <option value="custom"
+                            {% if trend_filter=="custom" %}selected{% endif %}>
+                            Custom Range
+                        </option>
+
+                    </select>
+
+                </div>
+
+                {% if trend_filter=="custom" %}
+
+                <div class="row mt-3">
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="start_date"
+                            value="{{ start_date }}">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="end_date"
+                            value="{{ end_date }}">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            Apply
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </form>
+
+        </div>
+
+        <div class="card-body">
+
+            <canvas id="trendChart" height="300"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- Recent Transactions -->
+
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="card shadow-sm border-0 rounded-4">
+
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                    <h5 class="mb-0">
+
+                        Recent Transactions
+
+                    </h5>
+
+                    <a href="/expenses">
+
+                        View All
+
+                    </a>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-hover">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Date</th>
+
+                                <th>Description</th>
+
+                                <th>Category</th>
+
+                                <th>Amount</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        {% if recent_expenses %}
+
+                            {% for expense in recent_expenses %}
+
+                            <tr>
+
+                                <td>{{ expense.expense_date }}</td>
+
+                                <td>{{ expense.description }}</td>
+
+                                <td>{{ expense.category }}</td>
+
+                                <td class="text-danger">
+
+                                    ₹{{ expense.amount }}
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="4" class="text-center">
+
+                                    No Transactions Found
+
+                                </td>
+
+                            </tr>
+
+                        {% endif %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+const categoryLabels = {{ category_labels | tojson }};
+const categoryAmounts = {{ category_amounts | tojson }};
+
+const trendLabels = {{ trend_labels | tojson }};
+const trendIncome = {{ trend_income | tojson }};
+const trendExpense = {{ trend_expense | tojson }};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+{% endblock %}

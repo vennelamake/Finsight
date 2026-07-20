@@ -1,0 +1,744 @@
+/* ===========================================
+            GOOGLE FONT
+=========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+}
+
+/* ===========================================
+            MAIN LAYOUT
+=========================================== */
+
+.dashboard{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+/* ===========================================
+            SIDEBAR
+=========================================== */
+
+.sidebar{
+
+    width:260px;
+
+    background:linear-gradient(180deg,#1d4ed8,#2563eb);
+
+    color:white;
+
+    padding:30px 20px;
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    bottom:0;
+
+    box-shadow:5px 0 20px rgba(0,0,0,.15);
+
+}
+
+.sidebar h2{
+
+    text-align:center;
+
+    font-size:30px;
+
+    margin-bottom:45px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+}
+
+.sidebar ul{
+
+    list-style:none;
+
+}
+
+.sidebar ul li{
+
+    padding:16px 18px;
+
+    margin-bottom:15px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    font-size:17px;
+
+}
+
+.sidebar ul li i{
+
+    margin-right:15px;
+
+    width:22px;
+
+}
+
+.sidebar ul li:hover{
+
+    background:rgba(255,255,255,.15);
+
+    transform:translateX(6px);
+
+}
+
+.sidebar .active{
+
+    background:white;
+
+    color:#2563eb;
+
+    font-weight:600;
+
+}
+
+/* ===========================================
+            MAIN CONTENT
+=========================================== */
+
+.main-content{
+
+    margin-left:260px;
+
+    width:100%;
+
+    padding:30px;
+
+}
+
+/* ===========================================
+            TOP BAR
+=========================================== */
+
+.topbar{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:18px 25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    margin-bottom:30px;
+
+}
+
+.topbar h3{
+
+    color:#1e293b;
+
+    font-weight:600;
+
+}
+
+.profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.profile i{
+
+    font-size:22px;
+
+    color:#2563eb;
+
+    cursor:pointer;
+
+}
+
+.profile img{
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    border:3px solid #2563eb;
+
+    object-fit:cover;
+
+}
+
+/* ===========================================
+            DASHBOARD CARDS
+=========================================== */
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:25px;
+
+    margin-bottom:35px;
+
+}
+
+.card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    cursor:pointer;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:120px;
+
+    height:120px;
+
+    background:rgba(37,99,235,.08);
+
+    border-radius:50%;
+
+    top:-40px;
+
+    right:-40px;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 35px rgba(0,0,0,.15);
+
+}
+
+.card h4{
+
+    color:#64748b;
+
+    font-size:16px;
+
+    margin-bottom:12px;
+
+    font-weight:500;
+
+}
+
+.card h2{
+
+    color:#2563eb;
+
+    font-size:32px;
+
+    font-weight:700;
+
+}
+
+/* ===========================================
+            CHART SECTION
+=========================================== */
+
+.chart-container{
+
+    background:white;
+
+    margin-top:10px;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    height:420px;
+
+}
+
+.chart-container canvas{
+
+    width:100% !important;
+
+    height:100% !important;
+
+}
+
+/* ===========================================
+            CARD COLORS
+=========================================== */
+
+.card:nth-child(1){
+
+    border-left:6px solid #2563eb;
+
+}
+
+.card:nth-child(2){
+
+    border-left:6px solid #ef4444;
+
+}
+
+.card:nth-child(3){
+
+    border-left:6px solid #10b981;
+
+}
+
+.card:nth-child(4){
+
+    border-left:6px solid #f59e0b;
+
+}
+
+/* ===========================================
+            CARD ICON PLACEHOLDER
+=========================================== */
+
+.card i{
+
+    position:absolute;
+
+    right:20px;
+
+    top:20px;
+
+    font-size:35px;
+
+    color:#dbeafe;
+
+}
+
+/* ===========================================
+            TRANSACTIONS
+=========================================== */
+
+.transactions{
+
+    background:white;
+
+    margin-top:35px;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.transactions h3{
+
+    margin-bottom:20px;
+
+    color:#1e293b;
+
+    font-weight:600;
+
+}
+
+.transactions table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.transactions table th{
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:15px;
+
+    text-align:left;
+
+}
+
+.transactions table td{
+
+    padding:15px;
+
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+.transactions table tr:hover{
+
+    background:#f8fafc;
+
+}
+
+/* ===========================================
+            SCROLLBAR
+=========================================== */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#e5e7eb;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#2563eb;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ===========================================
+            RESPONSIVE
+=========================================== */
+
+@media(max-width:1200px){
+
+.cards{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:992px){
+
+.sidebar{
+
+width:90px;
+
+padding:20px 10px;
+
+}
+
+.sidebar h2{
+
+font-size:18px;
+
+margin-bottom:30px;
+
+}
+
+.sidebar ul li{
+
+text-align:center;
+
+padding:15px;
+
+}
+
+.sidebar ul li i{
+
+margin-right:0;
+
+display:block;
+
+font-size:20px;
+
+margin-bottom:8px;
+
+}
+
+.main-content{
+
+margin-left:90px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+.topbar{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:15px;
+
+}
+
+.transactions{
+
+overflow-x:auto;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.main-content{
+
+padding:15px;
+
+}
+
+.chart-container{
+
+height:300px;
+
+}
+
+}
+
+/* ===========================================
+            ANIMATIONS
+=========================================== */
+
+.card{
+
+animation:fadeUp .6s ease;
+
+}
+
+.transactions{
+
+animation:fadeUp .8s ease;
+
+}
+
+.chart-container{
+
+animation:fadeUp 1s ease;
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+}
+.menu-link{
+
+    color:white;
+
+    text-decoration:none;
+
+    display:block;
+
+}
+
+.menu-link:hover{
+
+    color:white;
+
+}
+
+.sidebar .active .menu-link{
+
+    color:#2563eb;
+
+}
+.top-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:25px;
+
+}
+
+.notification{
+
+    position:relative;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+}
+
+.badge{
+
+    position:absolute;
+
+    top:-8px;
+
+    right:-8px;
+
+    background:red;
+
+    color:white;
+
+    font-size:11px;
+
+    width:18px;
+
+    height:18px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.dropdown{
+
+    position:relative;
+
+}
+
+.profile-btn{
+
+    border:none;
+
+    background:white;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+}
+
+.profile-btn img{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    border:2px solid #2563eb;
+
+}
+
+.dropdown-content{
+
+    display:none;
+
+    position:absolute;
+
+    right:0;
+
+    top:55px;
+
+    background:white;
+
+    width:190px;
+
+    border-radius:10px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+
+    overflow:hidden;
+
+}
+
+.dropdown-content a{
+
+    display:block;
+
+    padding:12px 18px;
+
+    color:#333;
+
+    text-decoration:none;
+
+}
+
+.dropdown-content a:hover{
+
+    background:#f4f7fb;
+
+}
+
+.dropdown:hover .dropdown-content{
+
+    display:block;
+
+}
+
+.card-body canvas {
+    height: 320px !important;
+}

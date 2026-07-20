@@ -1,0 +1,106 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning text-dark">
+
+            <h3>
+
+                <i class="fa-solid fa-pen-to-square"></i>
+
+                Update Goal
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Goal Name</label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="goal_name"
+                            value="{{ goal.goal_name }}"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Target Amount</label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            name="target_amount"
+                            value="{{ goal.target_amount }}"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Saved Amount</label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            name="saved_amount"
+                            value="{{ goal.saved_amount }}"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Target Date</label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="target_date"
+                            value="{{ goal.target_date }}"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-success">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Update Goal
+
+                </button>
+
+                <a href="{{ url_for('goals') }}"
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

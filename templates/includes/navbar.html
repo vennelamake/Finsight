@@ -1,0 +1,101 @@
+<div class="navbar">
+
+    <div class="page-title">
+
+        <div>
+
+            <h3>Financial Dashboard</h3>
+
+            <small>Welcome back, {{ current_user.fullname }}</small>
+
+        </div>
+
+    </div>
+
+    <div class="right-menu">
+
+        <div class="notification">
+
+            <a href="{{ url_for('notifications') }}"
+                class="nav-link position-relative">
+
+                    <i class="fa-solid fa-bell fa-lg"></i>
+
+                    {% if notification_count and notification_count > 0 %}
+
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                        {{ notification_count }}
+
+                    </span>
+
+                    {% endif %}
+
+                </a>
+            
+
+        </div>
+        <div class="profile-dropdown">
+
+            {% if current_user.profile_image and current_user.profile_image != "default.png" %}
+
+            <img src="{{ url_for('static', filename='uploads/' + current_user.profile_image) }}"
+                class="rounded-circle"
+                width="45"
+                height="45"
+                style="object-fit:cover;">
+
+            {% else %}
+
+            <img src="{{ url_for('static', filename='images/default.png') }}"
+                class="rounded-circle"
+                width="45"
+                height="45"
+                style="object-fit:cover;">
+
+            {% endif %}
+
+            <div class="profile-info">
+
+                <strong>{{ current_user.fullname }}</strong>
+
+                <small>{{ current_user.role }}</small>
+
+            </div>
+
+            <i class="fa-solid fa-chevron-down"></i>
+
+            <div class="dropdown-menu">
+
+                <a href="/profile">
+
+                    
+
+                    My Profile
+
+                </a>
+
+                <a class="dropdown-item"
+                    href="{{ url_for('change_password') }}">
+
+                        <i class="fa-solid fa-key me-2"></i>
+
+                        Change Password
+
+                    </a>
+
+                <a href="/logout">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Logout
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

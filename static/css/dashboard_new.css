@@ -1,0 +1,332 @@
+/* ===========================
+   DASHBOARD
+=========================== */
+
+.content{
+    background:#f5f7fb;
+    min-height:100vh;
+}
+
+.card{
+    border:none;
+    border-radius:18px;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.card-body{
+    padding:25px;
+}
+
+.card h3{
+    font-weight:700;
+}
+
+.card h5{
+    font-weight:600;
+}
+
+.card h6{
+    color:#777;
+    font-size:14px;
+}
+
+.fa-3x{
+    opacity:.9;
+}
+
+/* ===========================
+   SUMMARY CARDS
+=========================== */
+
+.row.g-4 .card{
+
+    height:160px;
+
+}
+
+.text-success{
+    color:#16a34a !important;
+}
+
+.text-danger{
+    color:#dc2626 !important;
+}
+
+.text-warning{
+    color:#d97706 !important;
+}
+
+.text-primary{
+    color:#2563eb !important;
+}
+
+/* ===========================
+   CHART CARDS
+=========================== */
+
+.card-header{
+
+    background:white !important;
+
+    border-bottom:1px solid #ececec;
+
+    font-weight:600;
+
+    padding:18px 25px;
+
+}
+
+.card-header h5{
+
+    margin:0;
+
+}
+
+canvas{
+
+    max-height:320px;
+
+}
+
+/* ===========================
+   TABLE
+=========================== */
+
+.table{
+
+    margin-bottom:0;
+
+}
+
+.table thead{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.table thead th{
+
+    border:none;
+
+    padding:15px;
+
+    font-weight:600;
+
+}
+
+.table tbody td{
+
+    padding:14px;
+
+    vertical-align:middle;
+
+}
+
+.table-hover tbody tr:hover{
+
+    background:#f3f8ff;
+
+}
+
+/* ===========================
+   BADGES
+=========================== */
+
+.badge{
+
+    padding:8px 12px;
+
+    font-size:12px;
+
+    border-radius:20px;
+
+}
+
+/* ===========================
+   PROGRESS BARS
+=========================== */
+
+.progress{
+
+    height:22px;
+
+    border-radius:30px;
+
+    background:#e9ecef;
+
+    overflow:hidden;
+
+}
+
+.progress-bar{
+
+    font-weight:600;
+
+    font-size:13px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+/* ===========================
+   GOALS
+=========================== */
+
+.card-body h6{
+
+    font-weight:600;
+
+    margin-top:12px;
+
+    margin-bottom:8px;
+
+}
+
+.card-body .progress{
+
+    margin-bottom:15px;
+
+}
+
+/* ===========================
+   BUDGET CARD
+=========================== */
+
+.alert{
+
+    border-radius:12px;
+
+    border:none;
+
+    font-weight:600;
+
+}
+
+.alert-success{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+.alert-danger{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+.btn{
+
+    border-radius:10px;
+
+    font-weight:600;
+
+}
+
+.btn-primary{
+
+    background:#2563eb;
+
+    border:none;
+
+}
+
+.btn-primary:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .card{
+
+        margin-bottom:20px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    h2{
+
+        font-size:24px;
+
+    }
+
+    .card-body{
+
+        padding:18px;
+
+    }
+
+    canvas{
+
+        max-height:250px;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .table{
+
+        font-size:13px;
+
+    }
+
+}
+
+/* ===========================
+   ANIMATION
+=========================== */
+
+.card{
+
+    animation:fadeIn .5s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
