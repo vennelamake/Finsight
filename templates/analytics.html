@@ -664,7 +664,7 @@ body.dark .bg-warning{
 
                     <strong>
 
-                        {{ (health_score+5) if health_score<95 else 100 }}/100
+                        {{ health_score }}/100
 
                     </strong>
 
@@ -673,7 +673,7 @@ body.dark .bg-warning{
                 <div class="progress mb-3">
 
                     <div class="progress-bar bg-success"
-                         style="width:{{ (health_score+5) if health_score<95 else 100 }}%">
+                        style="width:{{ health_score }}%">
                     </div>
 
                 </div>
@@ -690,7 +690,7 @@ body.dark .bg-warning{
 
                     <strong>
 
-                        {{ (health_score-5) if health_score>5 else health_score }}/100
+                        {{ health_score }}/100
 
                     </strong>
 
@@ -699,7 +699,7 @@ body.dark .bg-warning{
                 <div class="progress mb-3">
 
                     <div class="progress-bar bg-primary"
-                         style="width:{{ (health_score-5) if health_score>5 else health_score }}%">
+                         style="width:{{ health_score }}%">
                     </div>
 
                 </div>
@@ -742,7 +742,7 @@ body.dark .bg-warning{
 
                     <strong>
 
-                        {{ (health_score-10) if health_score>10 else health_score }}/100
+                        {{ health_score }}/100
 
                     </strong>
 
@@ -751,7 +751,7 @@ body.dark .bg-warning{
                 <div class="progress">
 
                     <div class="progress-bar bg-danger"
-                         style="width:{{ (health_score-10) if health_score>10 else health_score }}%">
+                         style="width:{{ health_score }}%">
                     </div>
 
                 </div>
@@ -1371,6 +1371,10 @@ document.addEventListener("DOMContentLoaded", function () {
        CASH FLOW
     ============================================ */
 
+    const isDarkMode = document.body.classList.contains("dark");
+    const textColor = isDarkMode ? "#f5f5f5" : "#000000";
+    const gridColor = isDarkMode ? "#444444" : "#dddddd";
+
     const cashCanvas = document.getElementById("cashFlowChart");
 
     if (cashCanvas) {
@@ -1455,7 +1459,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     legend: {
                         position: "top",
                         labels: {
-                            color: "#f5f5f5"
+                            color: textColor
                         }
                     }
                 },
@@ -1463,19 +1467,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 scales: {
                     x: {
                         ticks: {
-                            color: "#f5f5f5"
+                            color: textColor
                         },
                         grid: {
-                            color: "#444"
+                            color: gridColor
                         }
                     },
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            color: "#f5f5f5"
+                            color: textColor
                         },
                         grid: {
-                            color: "#444"
+                            color: gridColor
                         }
                     }
                 }

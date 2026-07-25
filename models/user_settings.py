@@ -24,6 +24,10 @@ class UserSettings(db.Model):
 
     # Notifications
     budget_alert = db.Column(db.Boolean, default=True)
+    income_notification = db.Column(db.Boolean, default=True)
+    expense_notification = db.Column(db.Boolean, default=True)
+    savings_notification = db.Column(db.Boolean, default=True)
     goal_reminder = db.Column(db.Boolean, default=True)
     investment_update = db.Column(db.Boolean, default=True)
-    monthly_report = db.Column(db.Boolean, default=True)
+    financial_health_alert = db.Column(db.Boolean, default=True)
+    spending_insight = db.Column(db.Boolean, default=True)

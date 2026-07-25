@@ -2290,9 +2290,16 @@ def analytics():
         if goal.saved_amount >= goal.target_amount
     )
 
-    
-
-    health_score = 100
+    if (
+        total_income == 0 and
+        total_expense == 0 and
+        total_budget == 0 and
+        total_investment == 0 and
+        len(goals) == 0
+    ):
+        health_score = 0
+    else:
+        health_score = 100
 
     # Savings Rate
     if total_income > 0:
@@ -3325,9 +3332,13 @@ def update_settings():
     settings.theme = request.form.get("theme")
 
     settings.budget_alert = "budget_alert" in request.form
+    settings.income_notification = "income_notification" in request.form
+    settings.expense_notification = "expense_notification" in request.form
+    settings.savings_notification = "savings_notification" in request.form
     settings.goal_reminder = "goal_reminder" in request.form
     settings.investment_update = "investment_update" in request.form
-    settings.monthly_report = "monthly_report" in request.form
+    settings.financial_health_alert = "financial_health_alert" in request.form
+    settings.spending_insight = "spending_insight" in request.form
 
     db.session.commit()
 
@@ -3335,11 +3346,46 @@ def update_settings():
 
     return redirect(url_for("settings"))
 
-@app.route("/delete-account")
+# ==========================================================
+# DELETE ACCOUNT
+# ==========================================================
+
+@app.route("/delete-account", methods=["POST"])
 @login_required
 def delete_account():
 
-    return "Delete Account feature coming soon!"
+    user_id = current_user.user_id
+
+    # Delete child records
+    Notification.query.filter_by(user_id=user_id).delete()
+    Expense.query.filter_by(user_id=user_id).delete()
+    Income.query.filter_by(user_id=user_id).delete()
+    Budget.query.filter_by(user_id=user_id).delete()
+    Goal.query.filter_by(user_id=user_id).delete()
+    InvestmentTransaction.query.filter_by(
+        user_id=user_id
+    ).delete(synchronize_session=False)
+    Investment.query.filter_by(user_id=user_id).delete()
+    UserSettings.query.filter_by(user_id=user_id).delete()
+
+    # Delete user
+    user = User.query.get(user_id)
+    db.session.delete(user)
+
+    db.session.commit()
+
+    logout_user()
+
+    flash(
+        "Your account has been deleted successfully.",
+        "success"
+    )
+
+    return redirect(url_for("login"))
+
+# ==========================================================
+# END DELETE ACCOUNT
+# ==========================================================
 
 # -------------------------
 # FORGOT PASSWORD
@@ -4280,7 +4326,43 @@ def health_score():
     # HEALTH SCORE CALCULATION
     # ------------------------------------------------------
 
-    health_score = 100
+    if (
+        total_income == 0 and
+        total_expense == 0 and
+        total_budget == 0 and
+        total_investment == 0 and
+        total_goals == 0
+    ):
+        health_score = 0
+    else:
+        health_score = 100
+
+        if total_income > 0:
+
+            expense_ratio = (
+                total_expense /
+                total_income
+            ) * 100
+
+            if expense_ratio > 90:
+                health_score -= 30
+
+            elif expense_ratio > 75:
+                health_score -= 20
+
+            elif expense_ratio > 60:
+                health_score -= 10
+
+        if total_budget > 0 and total_expense > total_budget:
+            health_score -= 15
+
+        if total_investment == 0:
+            health_score -= 15
+
+        if total_goals == 0:
+            health_score -= 10
+
+    health_score = max(health_score, 0)
 
     if total_income > 0:
 
@@ -4944,6 +5026,8 @@ def edit_budget(budget_id):
 
         db.session.commit()
 
+        generate_budget_notifications(current_user.user_id)
+
         flash(
             "Budget updated successfully!",
             "success"
@@ -5015,10 +5099,15 @@ def inject_sidebar_data():
 
     monthly_savings = monthly_income - monthly_expense
 
+    notification_count = Notification.query.filter_by(
+        user_id=current_user.user_id,
+        is_read=False
+    ).count()
     return {
         "monthly_income": convert_amount(monthly_income),
         "monthly_expense": convert_amount(monthly_expense),
         "monthly_savings": convert_amount(monthly_savings),
+        "currency_symbol": get_currency_symbol(),
         "currency_symbol": get_currency_symbol()
     }
 

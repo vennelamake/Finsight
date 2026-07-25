@@ -83,72 +83,80 @@
 
     <!-- Notifications -->
 
-    <div class="settings-card mt-4">
+    <div class="mb-4">
+        <label class="form-label fw-bold">Notification Preferences</label>
 
-        <h4>
-
-            <i class="fas fa-bell"></i>
-
-            Notification Preferences
-
-        </h4>
-
-        <div class="form-check form-switch">
-
-            <input
-                class="form-check-input"
-                type="checkbox"
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
                 name="budget_alert"
                 {% if settings.budget_alert %}checked{% endif %}>
-
             <label class="form-check-label">
                 Budget Alerts
             </label>
-
         </div>
 
-        <div class="form-check form-switch">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                name="income_notification"
+                {% if settings.income_notification %}checked{% endif %}>
+            <label class="form-check-label">
+                Income Notifications
+            </label>
+        </div>
 
-            <input class="form-check-input"
-                   type="checkbox"
-                   name="goal_reminder"
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                name="expense_notification"
+                {% if settings.expense_notification %}checked{% endif %}>
+            <label class="form-check-label">
+                Expense Notifications
+            </label>
+        </div>
 
-                   {% if settings.goal_reminder %}checked{% endif %}>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                name="savings_notification"
+                {% if settings.savings_notification %}checked{% endif %}>
+            <label class="form-check-label">
+                Savings Notifications
+            </label>
+        </div>
 
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                name="goal_reminder"
+                {% if settings.goal_reminder %}checked{% endif %}>
             <label class="form-check-label">
                 Goal Reminders
             </label>
-
         </div>
 
-        <div class="form-check form-switch">
-
-            <input class="form-check-input"
-                   type="checkbox"
-                   name="investment_update"
-
-                   {% if settings.investment_update %}checked{% endif %}>
-
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                name="investment_update"
+                {% if settings.investment_update %}checked{% endif %}>
             <label class="form-check-label">
                 Investment Updates
             </label>
-
         </div>
 
-        <div class="form-check form-switch">
-
-            <input class="form-check-input"
-                   type="checkbox"
-                   name="monthly_report"
-
-                   {% if settings.monthly_report %}checked{% endif %}>
-
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                name="financial_health_alert"
+                {% if settings.financial_health_alert %}checked{% endif %}>
             <label class="form-check-label">
-                Monthly Report Reminder
+                Financial Health Alerts
             </label>
-
         </div>
 
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                name="spending_insight"
+                {% if settings.spending_insight %}checked{% endif %}>
+            <label class="form-check-label">
+                Spending Insights
+            </label>
+        </div>
         <button type="submit" class="btn btn-primary mt-4">
 
             <i class="fas fa-save"></i>
@@ -178,28 +186,24 @@
             Export Financial Reports
         </a>
 
-        <button
-            type="button"
-            class="btn btn-outline-danger float-end"
-            onclick="confirmDelete()">
+        <form action="{{ url_for('delete_account') }}"
+            method="POST"
+            class="float-end"
+            onsubmit="return confirm('Are you sure you want to permanently delete your account? This action cannot be undone.');">
 
-            <i class="fas fa-trash"></i>
-            Delete Account
+            <button type="submit" class="btn btn-outline-danger">
+                <i class="fas fa-trash"></i>
+                Delete Account
+            </button>
 
-        </button>
+        </form>
 
     </div>
 
 </div>
 
 <script>
-function confirmDelete() {
 
-    if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-        window.location.href = "/delete-account";
-    }
-
-}
 </script>
 
 {% endblock %}

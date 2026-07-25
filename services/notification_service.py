@@ -9,6 +9,7 @@ from models.income import Income
 from models.budget import Budget
 from models.goal import Goal
 from models.investment import Investment
+from models.user_settings import UserSettings
 
 
 # =====================================================
@@ -53,6 +54,11 @@ def create_notification(user_id, title, message, notification_type, category):
 # =====================================================
 
 def generate_budget_notifications(user_id):
+
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.budget_alert:
+        return
 
     budgets = Budget.query.filter_by(user_id=user_id).all()
     expenses = Expense.query.filter_by(user_id=user_id).all()
@@ -101,6 +107,11 @@ def generate_budget_notifications(user_id):
 
 def generate_goal_notifications(user_id):
 
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.goal_reminder:
+        return
+
     goals = Goal.query.filter_by(user_id=user_id).all()
 
     if not goals:
@@ -148,6 +159,11 @@ def generate_goal_notifications(user_id):
 
 def generate_income_notifications(user_id):
 
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.income_notification:
+        return
+
     incomes = Income.query.filter_by(user_id=user_id).all()
 
     if not incomes:
@@ -179,6 +195,11 @@ def generate_income_notifications(user_id):
 
 def generate_expense_notifications(user_id):
 
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.expense_notification:
+        return
+
     expenses = Expense.query.filter_by(user_id=user_id).all()
 
     if not expenses:
@@ -200,6 +221,11 @@ def generate_expense_notifications(user_id):
 # =====================================================
 
 def generate_investment_notifications(user_id):
+
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.investment_update:
+        return
 
     investments = Investment.query.filter_by(user_id=user_id).all()
 
@@ -252,6 +278,11 @@ def generate_investment_notifications(user_id):
 
 def generate_savings_notifications(user_id):
 
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.savings_notification:
+        return
+
     income = db.session.query(
         func.coalesce(func.sum(Income.amount), 0)
     ).filter_by(user_id=user_id).scalar()
@@ -298,6 +329,11 @@ def generate_savings_notifications(user_id):
 # =====================================================
 
 def generate_financial_health_notifications(user_id):
+
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.financial_health_alert:
+        return
 
     income = db.session.query(
         func.coalesce(func.sum(Income.amount), 0)
@@ -361,6 +397,11 @@ def generate_financial_health_notifications(user_id):
 # =====================================================
 
 def generate_spending_insights(user_id):
+
+    settings = UserSettings.query.filter_by(user_id=user_id).first()
+
+    if settings and not settings.spending_insight:
+        return
 
     expenses = Expense.query.filter_by(user_id=user_id).all()
 

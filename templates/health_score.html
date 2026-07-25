@@ -273,7 +273,11 @@ Financial Score Breakdown
 
 <strong class="text-success">
 
-{% if total_income>0 %}25/25{% else %}10/25{% endif %}
+{% if total_income > 0 %}
+25/25
+{% else %}
+0/25
+{% endif %}
 
 </strong>
 
@@ -283,7 +287,7 @@ Financial Score Breakdown
 
 <div class="progress-bar bg-success"
 
-style="width:{% if total_income>0 %}100{% else %}40{% endif %}%">
+style="width:{% if total_income > 0 %}100{% else %}0{% endif %}%">
 
 </div>
 
@@ -309,7 +313,11 @@ Consistent income improves financial stability.
 
 <strong class="text-primary">
 
-{% if total_income>total_expense %}25/25{% else %}10/25{% endif %}
+{% if total_income > 0 and total_income > total_expense %}
+25/25
+{% else %}
+0/25
+{% endif %}
 
 </strong>
 
@@ -319,7 +327,7 @@ Consistent income improves financial stability.
 
 <div class="progress-bar bg-primary"
 
-style="width:{% if total_income>total_expense %}100{% else %}40{% endif %}%">
+style="width:{% if total_income > 0 and total_income > total_expense %}100{% else %}0{% endif %}%">
 
 </div>
 
@@ -345,10 +353,10 @@ Lower expenses improve financial health.
 
             <strong class="text-warning">
 
-                {% if total_investment>0 %}
-                    25/25
+                {% if total_investment > 0 %}
+                25/25
                 {% else %}
-                    10/25
+                0/25
                 {% endif %}
 
             </strong>
@@ -359,7 +367,7 @@ Lower expenses improve financial health.
 
             <div class="progress-bar bg-warning"
 
-                 style="width:{% if total_investment>0 %}100{% else %}40{% endif %}%">
+                 style="width:{% if total_investment > 0 %}100{% else %}0{% endif %}%">
 
             </div>
 
