@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
 <meta charset="UTF-8">
 
@@ -21,9 +20,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 <link rel="stylesheet"
 href="{{ url_for('static', filename='css/investments.css') }}">
 
-</head>
-
-<body>
 
 <div class="container mt-4">
 
@@ -43,7 +39,7 @@ href="{{ url_for('static', filename='css/investments.css') }}">
 
 <h4 class="text-primary">
 
-₹ {{ "%.2f"|format(total_investment) }}
+{{ currency_symbol }}{{ "%.2f"|format(total_investment) }}
 
 </h4>
 
@@ -63,7 +59,7 @@ href="{{ url_for('static', filename='css/investments.css') }}">
 
 <h4 class="text-success">
 
-₹ {{ "%.2f"|format(current_value) }}
+{{ currency_symbol }}{{ "%.2f"|format(current_value) }}
 
 </h4>
 
@@ -83,7 +79,7 @@ href="{{ url_for('static', filename='css/investments.css') }}">
 
 <h4 class="{% if profit>=0 %}text-success{% else %}text-danger{% endif %}">
 
-₹ {{ "%.2f"|format(profit) }}
+{{ currency_symbol }}{{ "%.2f"|format(profit) }}
 
 </h4>
 
@@ -202,6 +198,5 @@ new Chart(
 </script>
 
 {% endif %}
-</body>
 
-</html>
+{% endblock %}

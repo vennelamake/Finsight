@@ -1,5 +1,12 @@
-/* Google Font */
+/* ==========================================================
+                    REGISTER PAGE
+========================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ==========================================================
+                    GLOBAL
+========================================================== */
 
 *{
     margin:0;
@@ -9,13 +16,18 @@
 }
 
 body{
-    background:#eef4ff;
+
+    background:var(--bg);
+
+    color:var(--text);
+
     overflow-x:hidden;
+
 }
 
-/*=============================
-        LEFT PANEL
-==============================*/
+/* ==========================================================
+                    LEFT PANEL
+========================================================== */
 
 .left-panel{
 
@@ -79,7 +91,7 @@ body{
 
     position:relative;
 
-    z-index:10;
+    z-index:2;
 
 }
 
@@ -123,10 +135,6 @@ body{
 
     height:50px;
 
-    background:white;
-
-    color:#2563eb;
-
     border-radius:50%;
 
     display:flex;
@@ -135,13 +143,17 @@ body{
 
     align-items:center;
 
+    background:#fff;
+
+    color:#2563eb;
+
     font-size:20px;
 
 }
 
-/*=============================
-      RIGHT PANEL
-==============================*/
+/* ==========================================================
+                    RIGHT PANEL
+========================================================== */
 
 .right-panel{
 
@@ -151,7 +163,7 @@ body{
 
     align-items:center;
 
-    background:#f8fbff;
+    background:var(--bg);
 
 }
 
@@ -159,13 +171,17 @@ body{
 
     width:470px;
 
-    background:white;
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
 
     border-radius:20px;
 
     padding:40px;
 
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
+    box-shadow:var(--shadow);
 
 }
 
@@ -183,15 +199,15 @@ body{
 
     text-align:center;
 
-    color:gray;
+    color:var(--text-secondary);
 
     margin-bottom:25px;
 
 }
 
-/*=============================
-       INPUT BOXES
-==============================*/
+/* ==========================================================
+                    INPUTS
+========================================================== */
 
 .input-box{
 
@@ -201,11 +217,13 @@ body{
 
 .input-box label{
 
-    font-weight:600;
+    display:block;
 
     margin-bottom:8px;
 
-    display:block;
+    font-weight:600;
+
+    color:var(--text);
 
 }
 
@@ -221,17 +239,27 @@ body{
 
     height:50px;
 
-    border:1px solid #ddd;
-
-    border-radius:12px;
-
     padding-left:45px;
 
     padding-right:45px;
 
+    border-radius:12px;
+
+    border:1px solid var(--border);
+
+    background:var(--card);
+
+    color:var(--text);
+
     font-size:15px;
 
     transition:.3s;
+
+}
+
+.input-field input::placeholder{
+
+    color:var(--text-secondary);
 
 }
 
@@ -268,7 +296,7 @@ body{
 
     cursor:pointer;
 
-    color:#777;
+    color:var(--text-secondary);
 
 }
 
@@ -279,19 +307,19 @@ body{
 
 }
 
-/*=============================
-     PASSWORD RULES
-==============================*/
+/* ==========================================================
+                    PASSWORD RULES
+========================================================== */
 
 .password-rules{
 
     margin-top:10px;
 
-    background:#f4f7ff;
+    padding:10px;
 
     border-radius:10px;
 
-    padding:10px;
+    background:rgba(37,99,235,.08);
 
 }
 
@@ -303,23 +331,25 @@ body{
 
     margin:4px 0;
 
+    color:var(--text);
+
 }
 
-/*=============================
-         ERRORS
-==============================*/
+/* ==========================================================
+                    ERRORS
+========================================================== */
 
 small{
 
-    color:red;
+    color:#ef4444;
 
     font-size:13px;
 
 }
 
-/*=============================
-      BUTTON
-==============================*/
+/* ==========================================================
+                    BUTTON
+========================================================== */
 
 .register-btn{
 
@@ -333,15 +363,15 @@ small{
 
     background:linear-gradient(135deg,#2563eb,#3b82f6);
 
-    color:white;
+    color:#fff;
 
     font-size:17px;
 
     font-weight:600;
 
-    transition:.3s;
-
     margin-top:10px;
+
+    transition:.3s;
 
 }
 
@@ -353,9 +383,9 @@ small{
 
 }
 
-/*=============================
-      LOGIN LINK
-==============================*/
+/* ==========================================================
+                    LOGIN LINK
+========================================================== */
 
 .login-link{
 
@@ -381,42 +411,42 @@ small{
 
 }
 
-/*=============================
-      RESPONSIVE
-==============================*/
+/* ==========================================================
+                    RESPONSIVE
+========================================================== */
 
 @media(max-width:992px){
 
-.left-panel{
+    .left-panel{
 
-display:none;
+        display:none;
 
-}
+    }
 
-.register-card{
+    .register-card{
 
-width:100%;
+        width:100%;
 
-margin:20px;
+        margin:20px;
 
-padding:30px;
+        padding:30px;
 
-}
+    }
 
 }
 
 @media(max-width:576px){
 
-.register-card{
+    .register-card{
 
-padding:25px;
+        padding:25px;
 
-}
+    }
 
-.overlay h1{
+    .overlay h1{
 
-font-size:40px;
+        font-size:40px;
 
-}
+    }
 
 }

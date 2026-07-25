@@ -1,921 +1,698 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    <title>Financial Health Score | FinSight</title>
+<title>Financial Health Score | FinSight</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
+<style>
 
-        body{
+body{
+    background:var(--bg);
+    color:var(--text);
+}
 
-            background:#f5f7fb;
+.main-card{
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+}
 
-            font-family:'Segoe UI',sans-serif;
+.section-card{
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+}
 
-        }
+.section-title{
+    font-size:20px;
+    font-weight:700;
+}
 
-        .main-card{
+.score-number{
+    font-size:48px;
+    font-weight:bold;
+    line-height:1;
+}
 
-            background:white;
+.status{
+    font-size:22px;
+    font-weight:600;
+}
 
-            border:none;
+.factor-row{
 
-            border-radius:22px;
+    display:flex;
 
-            box-shadow:0 8px 25px rgba(0,0,0,.08);
+    justify-content:space-between;
 
-        }
+    padding:12px 0;
 
-        .section-card{
+    border-bottom:1px solid #ececec;
 
-            background:white;
+}
 
-            border:none;
+.factor-row:last-child{
 
-            border-radius:18px;
+    border:none;
 
-            box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
 
-        }
+.dot{
 
-        .section-title{
+    width:12px;
 
-            font-size:18px;
+    height:12px;
 
-            font-weight:700;
+    border-radius:50%;
 
-            margin-bottom:20px;
+    display:inline-block;
 
-        }
+    margin-right:8px;
 
-        .score-title{
+}
 
-            font-size:15px;
+/* ===========================
+   DARK MODE
+=========================== */
 
-            color:#777;
+body.dark .border{
+    border-color:var(--border) !important;
+}
 
-            margin-top:10px;
+body.dark .list-group-item{
+    background:var(--card);
+    color:var(--text);
+    border-color:var(--border);
+}
 
-        }
+body.dark .alert{
+    background:#252525;
+    color:var(--text);
+    border-color:var(--border);
+}
 
-        .score-number{
+body.dark .progress{
+    background:#3a3a3a;
+}
 
-            font-size:56px;
+body.dark .text-muted{
+    color:var(--text-secondary) !important;
+}
 
-            font-weight:bold;
+body.dark .btn-outline-primary{
+    color:#8ab4ff;
+    border-color:#8ab4ff;
+}
 
-            line-height:1;
+body.dark .btn-outline-primary:hover{
+    background:#0d6efd;
+    color:#fff;
+}
 
-        }
+body.dark .nav,
+body.dark .nav-tabs,
+body.dark .nav-pills,
+body.dark .analytics-nav,
+body.dark .analytics-navbar{
+    background:var(--card) !important;
+}
 
-        .status{
+body.dark .nav-link{
+    color:var(--text) !important;
+}
 
-            font-size:24px;
+body.dark .nav-link.active{
+    background:transparent !important;
+    color:#0d6efd !important;
+}
 
-            font-weight:600;
-
-        }
-
-        .factor-row{
-
-            display:flex;
-
-            justify-content:space-between;
-
-            align-items:center;
-
-            padding:10px 0;
-
-            border-bottom:1px solid #ececec;
-
-        }
-
-        .factor-row:last-child{
-
-            border-bottom:none;
-
-        }
-
-        .dot{
-
-            width:12px;
-
-            height:12px;
-
-            border-radius:50%;
-
-            display:inline-block;
-
-            margin-right:10px;
-
-        }
-
-    </style>
-
-</head>
-
-<body>
+</style>
 
 <div class="container-fluid py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div>
+<div>
 
-            <h2 class="fw-bold">
+<h2 class="fw-bold">
 
-                <i class="fa-solid fa-heart-pulse text-danger"></i>
+<i class="fa-solid fa-heart-pulse text-danger me-2"></i>
 
-                Financial Health Score
+Financial Health Score
 
-            </h2>
+</h2>
 
-            <small class="text-muted">
+<p class="text-muted mb-0">
 
-                Evaluate your overall financial wellness
+Evaluate your overall financial wellness.
 
-            </small>
+</p>
+
+</div>
+
+<a href="{{ url_for('dashboard') }}"
+class="btn btn-outline-primary">
+
+<i class="fa-solid fa-arrow-left me-2"></i>
+
+Dashboard
+
+</a>
+
+</div>
+
+{% include "includes/analytics_navbar.html" %}
+
+<div class="row mt-4">
+
+<div class="col-lg-4 mb-4">
+
+<div class="main-card p-4 h-100">
+
+<h4 class="text-center fw-bold mb-4">
+
+Overall Health Score
+
+</h4>
+
+<div class="position-relative mx-auto"
+     style="width:260px;height:180px;">
+
+    <canvas id="healthGauge"></canvas>
+
+    <div class="position-absolute top-50 start-50 translate-middle text-center"
+         style="margin-top:30px;">
+
+        <div class="score-number">
+            {{ health_score }}
+        </div>
+
+        <div class="status
+        {% if health_score>=80 %}
+        text-success
+        {% elif health_score>=60 %}
+        text-primary
+        {% elif health_score>=40 %}
+        text-warning
+        {% else %}
+        text-danger
+        {% endif %}">
+
+            {{ health_status }}
 
         </div>
 
-        <a href="{{ url_for('dashboard') }}"
-           class="btn btn-outline-primary rounded-pill">
-
-            <i class="fa-solid fa-arrow-left"></i>
-
-            Dashboard
-
-        </a>
-
     </div>
 
-    {% include "includes/analytics_navbar.html" %}
+</div>
 
-    <div class="row mt-4">
+<div class="alert alert-light mt-4 mb-0 text-center">
 
-        <!-- LEFT PANEL START -->
+{% if health_tips %}
 
-        <div class="col-lg-4 mb-4">
+{% for tip in health_tips %}
 
-            <div class="main-card p-4 h-100">
+<div>
 
-                <h5 class="fw-bold text-center mb-4">
+<i class="fa-solid fa-circle-check text-success me-2"></i>
 
-                    Financial Health Score
+{{ tip }}
 
-                </h5>
+</div>
 
-                <div class="mx-auto"
-                    style="width:260px;height:170px;">
+{% endfor %}
 
-                    <canvas id="healthGauge"></canvas>
+{% else %}
 
-                </div>
+Excellent! Your financial habits look healthy.
 
-                <div class="text-center">
+{% endif %}
 
-                    <div class="score-title">
+</div>
 
-                        Overall Score
+</div>
 
-                    </div>
+</div>
 
-                    <div class="score-number">
+<div class="col-lg-8 mb-4">
 
-                        {{ health_score }}
+<div class="section-card p-4">
 
-                    </div>
+<h4 class="section-title mb-4">
 
-                    <div class="text-muted mb-2">
+Financial Score Breakdown
 
-                        out of 100
+</h4>
 
-                    </div>
+<div class="row">
 
-                    <div
-                        class="status
-                        {% if health_score>=80 %}
-                            text-success
-                        {% elif health_score>=60 %}
-                            text-primary
-                        {% elif health_score>=40 %}
-                            text-warning
-                        {% else %}
-                            text-danger
-                        {% endif %}">
+<div class="col-md-6 mb-4">
 
-                        {{ health_status }}
+<div class="border rounded-4 p-3">
 
-                    </div>
+<div class="d-flex justify-content-between">
 
-                </div>
+<strong>Income Management</strong>
 
-                <hr class="my-4">
+<strong class="text-success">
 
-                <h6 class="fw-bold mb-3">
+{% if total_income>0 %}25/25{% else %}10/25{% endif %}
 
-                    Score Factors
+</strong>
 
-                </h6>
+</div>
 
-                <div class="factor-row">
+<div class="progress mt-2" style="height:10px;">
 
-                    <div>
+<div class="progress-bar bg-success"
 
-                        <span class="dot bg-success"></span>
+style="width:{% if total_income>0 %}100{% else %}40{% endif %}%">
 
-                        Income Management
+</div>
 
-                    </div>
+</div>
 
-                    <strong>
+<small class="text-muted">
 
-                        {% if total_income>0 %}
-                            25 / 25
-                        {% else %}
-                            10 / 25
-                        {% endif %}
+Consistent income improves financial stability.
 
-                    </strong>
+</small>
 
-                </div>
+</div>
 
-                <div class="factor-row">
+</div>
 
-                    <div>
+<div class="col-md-6 mb-4">
 
-                        <span class="dot bg-primary"></span>
+<div class="border rounded-4 p-3">
 
-                        Expense Control
+<div class="d-flex justify-content-between">
 
-                    </div>
+<strong>Expense Control</strong>
 
-                    <strong>
+<strong class="text-primary">
 
-                        {% if total_income>total_expense %}
-                            25 / 25
-                        {% else %}
-                            10 / 25
-                        {% endif %}
+{% if total_income>total_expense %}25/25{% else %}10/25{% endif %}
 
-                    </strong>
+</strong>
 
-                </div>
+</div>
 
-                <div class="factor-row">
+<div class="progress mt-2" style="height:10px;">
 
-                    <div>
+<div class="progress-bar bg-primary"
 
-                        <span class="dot bg-warning"></span>
+style="width:{% if total_income>total_expense %}100{% else %}40{% endif %}%">
 
-                        Investment Planning
+</div>
 
-                    </div>
+</div>
 
-                    <strong>
+<small class="text-muted">
 
-                        {% if total_investment>0 %}
-                            25 / 25
-                        {% else %}
-                            10 / 25
-                        {% endif %}
+Lower expenses improve financial health.
 
-                    </strong>
+</small>
 
-                </div>
+</div>
 
-                <div class="factor-row">
+</div>
 
-                    <div>
+<div class="col-md-6 mb-4">
 
-                        <span class="dot bg-danger"></span>
+    <div class="border rounded-4 p-3">
 
-                        Goal Achievement
+        <div class="d-flex justify-content-between">
 
-                    </div>
+            <strong>Investment Planning</strong>
 
-                    <strong>
+            <strong class="text-warning">
 
-                        {% if total_goals>0 %}
-                            {{ (completed_goals*25/total_goals)|round(0) }} / 25
-                        {% else %}
-                            0 / 25
-                        {% endif %}
+                {% if total_investment>0 %}
+                    25/25
+                {% else %}
+                    10/25
+                {% endif %}
 
-                    </strong>
+            </strong>
 
-                </div>
+        </div>
 
-                <div class="mt-4 p-3 rounded-4 bg-light text-center">
+        <div class="progress mt-2" style="height:10px;">
 
-                    <div class="text-muted small">
+            <div class="progress-bar bg-warning"
 
-                        Financial Wellness
-
-                    </div>
-
-                    <div class="fw-bold text-success fs-5">
-
-                        Keep tracking your spending and investments for a healthier financial future.
-
-                    </div>
-
-                </div>
+                 style="width:{% if total_investment>0 %}100{% else %}40{% endif %}%">
 
             </div>
 
         </div>
 
-        <!-- RIGHT PANEL START -->
+        <small class="text-muted">
 
-        <div class="col-lg-8">
+            Regular investments help build long-term wealth.
 
-            <div class="section-card p-4">
+        </small>
 
-                <h4 class="section-title">
+    </div>
 
-                    Financial Score Breakdown
+</div>
 
-                </h4>
+<div class="col-md-6 mb-4">
 
-                <div class="row">
+    <div class="border rounded-4 p-3">
 
-                <div class="col-md-6 mb-4">
+        <div class="d-flex justify-content-between">
 
-                    <div class="border rounded-4 p-3 h-100">
+            <strong>Goal Achievement</strong>
 
-                        <div class="d-flex justify-content-between mb-2">
+            <strong class="text-danger">
 
-                            <h6 class="fw-bold mb-0">
+                {% if total_goals>0 %}
 
-                                Income Management
+                    {{ (completed_goals*25/total_goals)|round(0) }}/25
 
-                            </h6>
+                {% else %}
 
-                            <span class="text-success fw-bold">
+                    0/25
 
-                                {% if total_income>0 %}
-                                25/25
-                                {% else %}
-                                10/25
-                                {% endif %}
+                {% endif %}
 
-                            </span>
+            </strong>
 
-                        </div>
+        </div>
 
-                        <div class="progress" style="height:10px;">
+        <div class="progress mt-2" style="height:10px;">
 
-                            <div class="progress-bar bg-success"
-                                style="width:
-                                {% if total_income>0 %}
-                                100%
-                                {% else %}
-                                40%
-                                {% endif %};">
-                            </div>
+            <div class="progress-bar bg-danger"
 
-                        </div>
+                 style="width:{% if total_goals>0 %}{{ (completed_goals*100/total_goals)|round(0) }}{% else %}0{% endif %}%">
 
-                        <small class="text-muted">
+            </div>
 
-                            Consistent income improves your financial stability.
+        </div>
 
-                        </small>
+        <small class="text-muted">
 
-                    </div>
+            Completing goals reflects disciplined financial planning.
 
-                </div>
+        </small>
 
-                <div class="col-md-6 mb-4">
+    </div>
 
-                    <div class="border rounded-4 p-3 h-100">
+</div>
 
-                        <div class="d-flex justify-content-between mb-2">
+</div>
 
-                            <h6 class="fw-bold mb-0">
+<hr>
 
-                                Expense Control
+</div>
 
-                            </h6>
+</div>
 
-                            <span class="text-primary fw-bold">
+</div>
 
-                                {% if total_income>total_expense %}
-                                25/25
-                                {% else %}
-                                10/25
-                                {% endif %}
+<!-- ================= PORTFOLIO ================= -->
 
-                            </span>
+<div class="card section-card border-0 p-4 mb-4">
 
-                        </div>
+<h4 class="section-title">
 
-                        <div class="progress" style="height:10px;">
+<i class="fa-solid fa-chart-pie text-primary me-2"></i>
 
-                            <div class="progress-bar bg-primary"
-                                style="width:
-                                {% if total_income>total_expense %}
-                                100%
-                                {% else %}
-                                40%
-                                {% endif %};">
-                            </div>
+Portfolio Insights
 
-                        </div>
+</h4>
 
-                        <small class="text-muted">
+<div class="row g-3 mt-2">
 
-                            Lower expenses compared to income indicate better financial health.
+    <!-- Portfolio Value -->
+    <div class="col">
+        <div class="border rounded-4 p-3 text-center h-100">
+            <h6 class="text-muted">Portfolio Value</h6>
+            <h3 class="text-success">
+                {{ currency_symbol }}{{ "%.2f"|format(portfolio_value) }}
+            </h3>
+        </div>
+    </div>
 
-                        </small>
+    <!-- Diversification -->
+    <div class="col">
+        <div class="border rounded-4 p-3 text-center h-100">
+            <h6 class="text-muted">Diversification</h6>
+            <h3 class="text-primary">
+                {{ diversification }}
+            </h3>
+        </div>
+    </div>
 
-                    </div>
+    <!-- Risk -->
+    <div class="col">
+        <div class="border rounded-4 p-3 text-center h-100">
+            <h6 class="text-muted">Risk Level</h6>
+            <h3 class="text-danger">
+                {{ risk_level }}
+            </h3>
+        </div>
+    </div>
 
-                </div>
+    <!-- Best Performer -->
+    <div class="col">
+        <div class="border rounded-4 p-3 text-center h-100">
+            <h6 class="text-muted">Best Performer</h6>
+            <h3 class="text-success">
+                {% if best_investment %}
+                    {{ best_investment.symbol }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </h3>
+        </div>
+    </div>
 
-                <div class="col-md-6 mb-4">
+    <!-- Worst Performer -->
+    <div class="col">
+        <div class="border rounded-4 p-3 text-center h-100">
+            <h6 class="text-muted">Worst Performer</h6>
+            <h3 class="text-danger">
+                {% if worst_investment %}
+                    {{ worst_investment.symbol }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </h3>
+        </div>
+    </div>
 
-                    <div class="border rounded-4 p-3 h-100">
+</div>
+<hr class="my-4">
 
-                        <div class="d-flex justify-content-between mb-2">
+<!-- ================= FINANCIAL SUMMARY ================= -->
 
-                            <h6 class="fw-bold mb-0">
+<div class="row">
 
-                                Investment Planning
+<div class="col-lg-6 mb-4">
 
-                            </h6>
+<div class="section-card p-4 h-100">
 
-                            <span class="text-warning fw-bold">
+<h4 class="section-title text-success">
 
-                                {% if total_investment>0 %}
-                                25/25
-                                {% else %}
-                                10/25
-                                {% endif %}
+<i class="fa-solid fa-circle-check me-2"></i>
 
-                            </span>
+Financial Strengths
 
-                        </div>
+</h4>
 
-                        <div class="progress" style="height:10px;">
+<ul class="list-group list-group-flush">
 
-                            <div class="progress-bar bg-warning"
-                                style="width:
-                                {% if total_investment>0 %}
-                                100%
-                                {% else %}
-                                40%
-                                {% endif %};">
-                            </div>
+{% if total_income > total_expense %}
+<li class="list-group-item">✅ Healthy savings pattern</li>
+{% endif %}
 
-                        </div>
+{% if total_investment > 0 %}
+<li class="list-group-item">✅ Active investment portfolio</li>
+{% endif %}
 
-                        <small class="text-muted">
+{% if completed_goals > 0 %}
+<li class="list-group-item">✅ Financial goals are being achieved</li>
+{% endif %}
 
-                            Regular investments help build long-term wealth.
+{% if total_budget > 0 %}
+<li class="list-group-item">✅ Budget tracking is enabled</li>
+{% endif %}
 
-                        </small>
+{% if total_income > total_expense and total_investment > 0 and total_budget > 0 %}
+<li class="list-group-item">
+Excellent financial discipline.
+</li>
+{% endif %}
 
-                    </div>
+</ul>
 
-                </div>
+</div>
 
-                <div class="col-md-6 mb-4">
+</div>
 
-                    <div class="border rounded-4 p-3 h-100">
+<div class="col-lg-6 mb-4">
 
-                        <div class="d-flex justify-content-between mb-2">
+<div class="section-card p-4 h-100">
 
-                            <h6 class="fw-bold mb-0">
+<h4 class="section-title text-warning">
 
-                                Goal Achievement
+<i class="fa-solid fa-triangle-exclamation me-2"></i>
 
-                            </h6>
+Areas for Improvement
 
-                            <span class="text-danger fw-bold">
+</h4>
 
-                                {% if total_goals>0 %}
-                                {{ (completed_goals*25/total_goals)|round(0) }}/25
-                                {% else %}
-                                0/25
-                                {% endif %}
+<ul class="list-group list-group-flush">
 
-                            </span>
+{% if total_income <= total_expense %}
+<li class="list-group-item">
+Reduce unnecessary expenses.
+</li>
+{% endif %}
 
-                        </div>
+{% if total_investment == 0 %}
+<li class="list-group-item">
+Start investing regularly.
+</li>
+{% endif %}
 
-                        <div class="progress" style="height:10px;">
+{% if total_goals == 0 %}
+<li class="list-group-item">
+Create financial goals.
+</li>
+{% endif %}
 
-                            <div class="progress-bar bg-danger"
-                                style="width:
-                                {% if total_goals>0 %}
-                                {{ (completed_goals*100/total_goals)|round(0) }}%
-                                {% else %}
-                                0%
-                                {% endif %};">
-                            </div>
+{% if total_budget == 0 %}
+<li class="list-group-item">
+Create a monthly budget.
+</li>
+{% endif %}
 
-                        </div>
+{% if total_income > total_expense and total_investment > 0 and total_goals > 0 and total_budget > 0 %}
+<li class="list-group-item text-success">
+No major improvements required.
+Keep maintaining your current financial habits.
+</li>
+{% endif %}
 
-                        <small class="text-muted">
+</ul>
 
-                            Achieving financial goals reflects disciplined money management.
+</div>
 
-                        </small>
+</div>
 
-                    </div>
+</div>
 
-                </div>
+</div>
 
-                </div>
+<script>
 
-                </div>
+const score={{ health_score }};
 
-                </div>
+let gaugeColor="#22c55e";
 
-                <div class="row mt-4">
+if(score<40){
 
-                    <div class="col-lg-6 mb-4">
+gaugeColor="#dc3545";
 
-                        <div class="section-card p-4 h-100">
+}
+else if(score<60){
 
-                            <h4 class="section-title text-success">
+gaugeColor="#f59e0b";
 
-                                <i class="fa-solid fa-circle-check me-2"></i>
+}
+else if(score<80){
 
-                                Financial Strengths
+gaugeColor="#0d6efd";
 
-                            </h4>
+}
 
-                            <ul class="list-group list-group-flush">
+new Chart(document.getElementById("healthGauge"),{
 
-                                {% if total_income > total_expense %}
-                                <li class="list-group-item">
-                                    ✅ Healthy savings pattern
-                                </li>
-                                {% endif %}
+type:"doughnut",
 
-                                {% if total_investment > 0 %}
-                                <li class="list-group-item">
-                                    ✅ Active investment portfolio
-                                </li>
-                                {% endif %}
+data:{
 
-                                {% if completed_goals > 0 %}
-                                <li class="list-group-item">
-                                    ✅ Financial goals are being achieved
-                                </li>
-                                {% endif %}
+datasets:[{
 
-                                {% if total_budget > 0 %}
-                                <li class="list-group-item">
-                                    ✅ Budget tracking is enabled
-                                </li>
-                                {% endif %}
+data:[score,100-score],
 
-                            </ul>
+backgroundColor:[
+    gaugeColor,
+    getComputedStyle(document.body)
+        .getPropertyValue('--progress')
+],
 
-                        </div>
+borderWidth:0,
 
-                    </div>
+borderRadius:12
 
-                    <div class="col-lg-6 mb-4">
+}]
 
-                        <div class="section-card p-4 h-100">
+},
 
-                            <h4 class="section-title text-warning">
+options:{
 
-                                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+responsive:true,
 
-                                Areas for Improvement
+maintainAspectRatio:false,
 
-                            </h4>
+rotation:270,
 
-                            <ul class="list-group list-group-flush">
+circumference:180,
 
-                                {% if total_income <= total_expense %}
-                                <li class="list-group-item">
-                                    Reduce unnecessary expenses.
-                                </li>
-                                {% endif %}
+cutout:"75%",
 
-                                {% if total_investment == 0 %}
-                                <li class="list-group-item">
-                                    Start investing regularly.
-                                </li>
-                                {% endif %}
+plugins:{
 
-                                {% if total_goals == 0 %}
-                                <li class="list-group-item">
-                                    Create financial goals.
-                                </li>
-                                {% endif %}
+legend:{
 
-                                {% if total_budget == 0 %}
-                                <li class="list-group-item">
-                                    Create a monthly budget.
-                                </li>
-                                {% endif %}
+display:false
 
-                            </ul>
+},
 
-                        </div>
+tooltip:{
 
-                    </div>
+enabled:false
 
-                </div>
+}
 
-                <div class="row">
+},
 
-                    <!-- Portfolio Insights -->
+animation:{
 
-                    <div class="col-lg-6 mb-4">
+animateRotate:true,
 
-                        <div class="section-card p-4 h-100">
+duration:1800
 
-                            <h4 class="section-title">
+}
 
-                                <i class="fa-solid fa-chart-pie text-primary me-2"></i>
+}
 
-                                Portfolio Insights
+});
 
-                            </h4>
+</script>
 
-                            <div class="row g-3">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-                                <div class="col-6">
-
-                                    <div class="border rounded-4 p-3 text-center">
-
-                                        <h6 class="text-muted">
-
-                                            Portfolio Value
-
-                                        </h6>
-
-                                        <h4 class="fw-bold text-success">
-
-                                            ₹ {{ portfolio_value|round(2) }}
-
-                                        </h4>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-6">
-
-                                    <div class="border rounded-4 p-3 text-center">
-
-                                        <h6 class="text-muted">
-
-                                            Diversification
-
-                                        </h6>
-
-                                        <h4 class="fw-bold text-primary">
-
-                                            {{ diversification }}
-
-                                        </h4>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-6">
-
-                                    <div class="border rounded-4 p-3 text-center">
-
-                                        <h6 class="text-muted">
-
-                                            Risk Level
-
-                                        </h6>
-
-                                        <h4 class="fw-bold text-danger">
-
-                                            {{ risk_level }}
-
-                                        </h4>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-6">
-
-                                    <div class="border rounded-4 p-3 text-center">
-
-                                        <h6 class="text-muted">
-
-                                            Best Performer
-
-                                        </h6>
-
-                                        <h5 class="fw-bold text-success">
-
-                                            {% if best_investment %}
-
-                                                {{ best_investment.symbol }}
-
-                                            {% else %}
-
-                                                N/A
-
-                                            {% endif %}
-
-                                        </h5>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col-12">
-
-                                    <div class="border rounded-4 p-3">
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <span class="fw-semibold">
-
-                                                Worst Performing Investment
-
-                                            </span>
-
-                                            <strong class="text-danger">
-
-                                                {% if worst_investment %}
-
-                                                    {{ worst_investment.symbol }}
-
-                                                {% else %}
-
-                                                    N/A
-
-                                                {% endif %}
-
-                                            </strong>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- Health Tips -->
-
-                    <div class="col-lg-6 mb-4">
-
-                        <div class="section-card p-4 h-100">
-
-                            <h4 class="section-title">
-
-                                <i class="fa-solid fa-lightbulb text-warning me-2"></i>
-
-                                Personalized Health Tips
-
-                            </h4>
-
-                            {% if health_tips %}
-
-                                {% for tip in health_tips %}
-
-                                <div class="border rounded-4 p-3 mb-3 d-flex align-items-start">
-
-                                    <div class="me-3">
-
-                                        <i class="fa-solid fa-circle-check text-success fs-4"></i>
-
-                                    </div>
-
-                                    <div>
-
-                                        {{ tip }}
-
-                                    </div>
-
-                                </div>
-
-                                {% endfor %}
-
-                            {% else %}
-
-                                <div class="alert alert-success rounded-4 mb-0">
-
-                                    Excellent! Your financial health is looking good. Keep maintaining your current habits.
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <script>
-
-                const score = {{ health_score }};
-
-                let gaugeColor = "#22c55e";
-
-                if (score < 40) {
-                    gaugeColor = "#dc3545";
-                }
-                else if (score < 60) {
-                    gaugeColor = "#f59e0b";
-                }
-                else if (score < 80) {
-                    gaugeColor = "#0d6efd";
-                }
-
-                new Chart(document.getElementById("healthGauge"), {
-
-                    type: "doughnut",
-
-                    data: {
-                        datasets: [{
-                            data: [score, 100 - score],
-                            backgroundColor: [
-                                gaugeColor,
-                                "#e9ecef"
-                            ],
-                            borderWidth: 0,
-                            borderRadius: 10
-                        }]
-                    },
-
-                    options: {
-
-                        responsive: true,
-
-                        maintainAspectRatio: false,
-
-                        rotation: 270,
-
-                        circumference: 180,
-
-                        cutout: "75%",
-
-                        animation: {
-
-                            animateRotate: true,
-
-                            duration: 1800
-
-                        },
-
-                        plugins: {
-
-                            legend: {
-
-                                display: false
-
-                            },
-
-                            tooltip: {
-
-                                enabled: false
-
-                            }
-
-                        }
-
-                    }
-
-                });
-
-                </script>
-
-                </div>
-
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-                </body>
-
-                </html>
+{% endblock %}

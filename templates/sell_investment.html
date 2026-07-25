@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
     <meta charset="UTF-8">
 
@@ -15,10 +14,6 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/investments.css') }}">
-
-</head>
-
-<body>
 
 <div class="container mt-5">
 
@@ -43,7 +38,7 @@
             <p>
                 <strong>Latest Current Price:</strong>
 
-                ₹ {{ "%.2f"|format(investment.current_price) }}
+                {{ currency_symbol }}{{ "%.2f"|format(investment.converted_current_price) }}
             </p>
 
             <form method="POST">
@@ -86,6 +81,4 @@
 
 </div>
 
-</body>
-
-</html>
+{% endblock %}

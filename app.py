@@ -5,14 +5,45 @@ from datetime import datetime
 from config import Config
 from extensions import db, login_manager
 
+from models.user_settings import UserSettings
+
 from models.user import User
 from models.expense import Expense
 from models.budget import Budget
 from models.income import Income
 from models.goal import Goal
+from models.notification import Notification
+from services.notification_service import (
+    generate_notifications,
+    generate_budget_notifications,
+    generate_goal_notifications,
+    generate_income_notifications,
+    generate_expense_notifications,
+    generate_investment_notifications,
+    generate_savings_notifications,
+    generate_financial_health_notifications,
+    generate_spending_insights,
+)
+
+
+from flask import send_file
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import A4
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill
+from io import BytesIO
+
+from datetime import datetime, timedelta
+from sqlalchemy import extract
+
+import requests
 
 import os
 from werkzeug.utils import secure_filename
+
 
 from models.investment import Investment
 from models.investment_transaction import InvestmentTransaction
@@ -31,6 +62,14 @@ from market_service import (
 
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+
+from utils.helpers import (
+    time_ago,
+    convert_amount,
+    convert_to_base_currency,
+    convert_list,
+    get_currency_symbol
+)
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "finsight-secret-key-2026"
@@ -57,6 +96,8 @@ db.init_app(app)
 login_manager.init_app(app)
 
 login_manager.login_view = "login"
+
+
 
 
 @login_manager.user_loader
@@ -138,6 +179,9 @@ def dashboard():
         Expense.expense_date.desc()
     ).limit(5).all()
 
+    for expense in recent_expenses:
+        expense.converted_amount = convert_amount(expense.amount)
+
     goals = Goal.query.filter_by(
         user_id=current_user.user_id
     ).all()
@@ -157,6 +201,18 @@ def dashboard():
     monthly_expense = total_expense
     monthly_savings = savings
     budget_percentage = budget_used
+
+    currency_symbol = get_currency_symbol()
+
+    monthly_income = convert_amount(monthly_income)
+    total_expense = convert_amount(total_expense)
+    savings = convert_amount(savings)
+    budget = convert_amount(budget)
+    remaining_budget = convert_amount(remaining_budget)
+
+    monthly_income = monthly_income
+    monthly_expense = total_expense
+    monthly_savings = savings
 
     # ---------------------------------
     # Expense Breakdown Filter
@@ -232,6 +288,8 @@ def dashboard():
 
     category_labels = [item[0] for item in category_data]
     category_amounts = [float(item[1]) for item in category_data]
+
+    category_amounts = convert_list(category_amounts)
 
     # ---------------------------------
     # Monthly Trend
@@ -365,44 +423,19 @@ def dashboard():
 
         trend_income = [float(income_total), 0]
         trend_expense = [0, float(expense_total)]
-
-    # ==========================================================
+    trend_income = convert_list(trend_income)
+    trend_expense = convert_list(trend_expense)
+    # -------------------------
     # NOTIFICATION COUNT
-    # ==========================================================
+    # -------------------------
 
-    notification_count = 0
+    
 
-    if budget == 0:
-
-        notification_count += 1
-
-    elif budget_used >= 80:
-
-        notification_count += 1
-
-    investment_count = Investment.query.filter_by(
-        user_id=current_user.user_id
+    notification_count = Notification.query.filter_by(
+        user_id=current_user.user_id,
+        is_read=False
     ).count()
-
-    if investment_count == 0:
-
-        notification_count += 1
-
-    if len(goals) == 0:
-
-        notification_count += 1
-
-    if monthly_income > 0:
-
-        expense_ratio = (
-            total_expense /
-            monthly_income
-        ) * 100
-
-        if expense_ratio > 75:
-
-            notification_count += 1
-
+   
     # -------------------------
     # INVESTMENT SUMMARY
     # -------------------------
@@ -489,7 +522,8 @@ def dashboard():
         portfolio_value=portfolio_value,
         portfolio_profit=portfolio_profit,
         portfolio_return=portfolio_return,
-        notification_count=notification_count
+        notification_count=notification_count,
+        currency_symbol=currency_symbol
     )
 
 
@@ -506,7 +540,7 @@ def expenses():
 
         new_expense = Expense(
             user_id=current_user.user_id,
-            amount=request.form["amount"],
+            amount=convert_to_base_currency(float(request.form["amount"])),
             category=request.form["category"],
             payment_method=request.form["payment_method"],
             description=request.form["description"],
@@ -515,6 +549,12 @@ def expenses():
 
         db.session.add(new_expense)
         db.session.commit()
+
+        generate_budget_notifications(current_user.user_id)
+        generate_expense_notifications(current_user.user_id)
+        generate_savings_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+        generate_spending_insights(current_user.user_id)
 
         flash("Expense Added Successfully!", "success")
 
@@ -526,9 +566,13 @@ def expenses():
         Expense.expense_date.desc()
     ).all()
 
+    for expense in expenses:
+        expense.converted_amount = convert_amount(expense.amount)
+
     return render_template(
         "expenses.html",
-        expenses=expenses
+        expenses=expenses,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -546,7 +590,7 @@ def edit_expense(expense_id):
 
     if request.method == "POST":
 
-        expense.amount = request.form["amount"]
+        expense.amount = convert_to_base_currency(float(request.form["amount"]))
         expense.category = request.form["category"]
         expense.payment_method = request.form["payment_method"]
         expense.description = request.form["description"]
@@ -554,13 +598,20 @@ def edit_expense(expense_id):
 
         db.session.commit()
 
+        generate_budget_notifications(current_user.user_id)
+        generate_expense_notifications(current_user.user_id)
+        generate_savings_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+        generate_spending_insights(current_user.user_id)
+
         flash("Expense updated successfully!", "success")
 
         return redirect("/expenses")
-
+    expense.converted_amount = convert_amount(expense.amount)
     return render_template(
         "edit_expense.html",
-        expense=expense
+        expense=expense,
+         currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -579,6 +630,11 @@ def delete_expense(expense_id):
     db.session.delete(expense)
 
     db.session.commit()
+
+    generate_budget_notifications(current_user.user_id)
+    generate_savings_notifications(current_user.user_id)
+    generate_financial_health_notifications(current_user.user_id)
+    generate_spending_insights(current_user.user_id)
 
     flash("Expense deleted successfully!", "success")
 
@@ -620,6 +676,9 @@ def budgets():
 
         db.session.commit()
 
+        generate_budget_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash("Budget saved successfully!", "success")
 
         return redirect("/budgets")
@@ -631,9 +690,13 @@ def budgets():
         Budget.budget_month.desc()
     ).all()
 
+    for budget in budgets:
+        budget.converted_amount = convert_amount(budget.budget_amount)
+
     return render_template(
         "budgets.html",
-        budgets=budgets
+        budgets=budgets,
+        currency_symbol=get_currency_symbol()
     )
 
 
@@ -658,6 +721,10 @@ def income():
         db.session.add(new_income)
         db.session.commit()
 
+        generate_income_notifications(current_user.user_id)
+        generate_savings_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash("Income added successfully!", "success")
 
         return redirect("/income")
@@ -668,9 +735,13 @@ def income():
         Income.income_date.desc()
     ).all()
 
+    for income in incomes:
+        income.converted_amount = convert_amount(income.amount)
+
     return render_template(
         "income.html",
-        incomes=incomes
+        incomes=incomes,
+        currency_symbol=get_currency_symbol()
     )
 
 
@@ -695,6 +766,9 @@ def goals():
         db.session.add(new_goal)
         db.session.commit()
 
+        generate_goal_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash("Goal created successfully!", "success")
 
         return redirect("/goals")
@@ -704,6 +778,9 @@ def goals():
     ).all()
 
     for goal in goals:
+
+        goal.converted_target = convert_amount(goal.target_amount)
+        goal.converted_saved = convert_amount(goal.saved_amount)
 
         if goal.target_amount > 0:
 
@@ -728,9 +805,11 @@ def goals():
 
             goal.status = "Needs Attention"
 
+    
     return render_template(
         "goals.html",
-        goals=goals
+        goals=goals,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -762,6 +841,9 @@ def update_goal(goal_id):
 
         db.session.commit()
 
+        generate_goal_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash(
             "Goal updated successfully!",
             "success"
@@ -771,9 +853,12 @@ def update_goal(goal_id):
             url_for("goals")
         )
 
+    goal.converted_target = convert_amount(goal.target_amount)
+    goal.converted_saved = convert_amount(goal.saved_amount)
     return render_template(
         "update_goal.html",
-        goal=goal
+        goal=goal,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -816,6 +901,10 @@ def save_goal(goal_id):
 
         db.session.commit()
 
+        generate_goal_notifications(current_user.user_id)
+        generate_savings_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash(
             "Savings added successfully!",
             "success"
@@ -825,9 +914,12 @@ def save_goal(goal_id):
             url_for("goals")
         )
 
+    goal.converted_saved = convert_amount(goal.saved_amount)
+
     return render_template(
         "save_goal.html",
-        goal=goal
+        goal=goal,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -1177,6 +1269,21 @@ def investments():
                 ) if x.buy_price > 0 else 0
             )
         )
+
+    total_investment = convert_amount(total_investment)
+    current_value = convert_amount(current_value)
+    realized_profit = convert_amount(realized_profit)
+    unrealized_profit = convert_amount(unrealized_profit)
+    total_profit = convert_amount(total_profit)
+
+    allocation_values = convert_list(allocation_values)
+    performance_values = convert_list(performance_values)
+
+    for investment in top_holdings:
+        investment.converted_current_value = convert_amount(
+            investment.quantity * investment.current_price
+        )
+
     return render_template(
         "investments.html",
         investments=investments,
@@ -1196,7 +1303,8 @@ def investments():
         asset_types=asset_types,
         largest_holding=largest_holding,
         best_performer=best_performer,
-        worst_performer=worst_performer
+        worst_performer=worst_performer,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -1299,6 +1407,9 @@ def add_investment():
 
         db.session.commit()
 
+        generate_investment_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash(
             "Investment added with latest market price!",
             "success"
@@ -1335,6 +1446,9 @@ def edit_investment(investment_id):
 
         db.session.commit()
 
+        generate_investment_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash(
             "Investment details updated successfully!",
             "success"
@@ -1343,10 +1457,11 @@ def edit_investment(investment_id):
         return redirect(
             url_for("holdings")
         )
-
+    investment.converted_buy_price = convert_amount(investment.buy_price)
     return render_template(
         "edit_investment.html",
-        investment=investment
+        investment=investment,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -1369,6 +1484,9 @@ def delete_investment(investment_id):
     db.session.delete(investment)
 
     db.session.commit()
+
+    generate_investment_notifications(current_user.user_id)
+    generate_financial_health_notifications(current_user.user_id)
 
     flash(
         "Investment and related transactions deleted successfully!",
@@ -1421,9 +1539,27 @@ def holdings():
             "Unknown"
         )
 
+    for investment in investments:
+        investment.converted_buy_price = convert_amount(investment.buy_price)
+        investment.converted_current_price = convert_amount(investment.current_price)
+
+        investment.converted_invested = convert_amount(
+            investment.quantity * investment.buy_price
+        )
+
+        investment.converted_current_value = convert_amount(
+            investment.quantity * investment.current_price
+        )
+
+        investment.converted_profit = convert_amount(
+            (investment.quantity * investment.current_price)
+            - (investment.quantity * investment.buy_price)
+        )
+
     return render_template(
         "holdings.html",
-        investments=investments
+        investments=investments,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -1510,9 +1646,28 @@ def transactions():
 
     transaction_data.reverse()
 
+    for item in transaction_data:
+
+        transaction = item["transaction"]
+
+        transaction.converted_price = convert_amount(
+            transaction.price
+        )
+
+        item["converted_total_amount"] = convert_amount(
+            transaction.quantity * transaction.price
+        )
+
+        if item["realized_profit"] is not None:
+
+            item["converted_realized_profit"] = convert_amount(
+                item["realized_profit"]
+            )
+
     return render_template(
         "transactions.html",
-        transactions=transaction_data
+        transactions=transaction_data,
+        currency_symbol=get_currency_symbol()
     )
 
 # -------------------------
@@ -1647,6 +1802,9 @@ def sell_investment(investment_id):
 
         db.session.commit()
 
+        generate_investment_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash(
             f"Sold {sell_quantity:g} units at ₹{latest_price:.2f} successfully!",
             "success"
@@ -1656,9 +1814,12 @@ def sell_investment(investment_id):
             url_for("holdings")
         )
 
+    investment.converted_current_price = convert_amount(investment.current_price)
+
     return render_template(
         "sell_investment.html",
-        investment=investment
+        investment=investment,
+        currency_symbol=get_currency_symbol()
     )
 # -------------------------
 # BUY MORE INVESTMENT
@@ -1789,6 +1950,9 @@ def buy_more(investment_id):
 
         db.session.commit()
 
+        generate_investment_notifications(current_user.user_id)
+        generate_financial_health_notifications(current_user.user_id)
+
         flash(
             f"Purchased {buy_quantity:g} additional units at ₹{buy_price:.2f}!",
             "success"
@@ -1797,10 +1961,12 @@ def buy_more(investment_id):
         return redirect(
             url_for("holdings")
         )
+    investment.converted_buy_price = convert_amount(investment.buy_price)
 
     return render_template(
         "buy_more.html",
-        investment=investment
+        investment=investment,
+        currency_symbol=get_currency_symbol()
     )
 # -------------------------
 # ASSET ALLOCATION
@@ -1909,16 +2075,25 @@ def asset_allocation():
             "Add investments to receive diversification insights."
         )
 
+    total_portfolio_value = convert_amount(total_portfolio_value)
+
+    values = convert_list(values)
+
+    converted_allocation = {}
+
+    for key, value in allocation.items():
+        converted_allocation[key] = convert_amount(value)
+
     return render_template(
         "asset_allocation.html",
         labels=labels,
+        allocation=converted_allocation,
         values=values,
-        allocation=allocation,
-        allocation_percentages=allocation_percentages,
         total_portfolio_value=total_portfolio_value,
+        currency_symbol=get_currency_symbol(),
+        allocation_percentages=allocation_percentages,
         portfolio_insight=portfolio_insight,
     )
-
 # -------------------------
 # PERFORMANCE
 # -------------------------
@@ -1982,6 +2157,13 @@ def performance():
 
         return_percent = 0
 
+    total_investment = convert_amount(total_investment)
+    current_value = convert_amount(current_value)
+    unrealized_profit = convert_amount(unrealized_profit)
+
+    invested_values = convert_list(invested_values)
+    portfolio_values = convert_list(portfolio_values)
+
     return render_template(
         "performance.html",
         labels=labels,
@@ -1990,7 +2172,8 @@ def performance():
         total_investment=total_investment,
         current_value=current_value,
         profit=unrealized_profit,
-        return_percent=return_percent
+        return_percent=return_percent,
+        currency_symbol=get_currency_symbol()
     )
 # -------------------------
 # ANALYTICS
@@ -2230,6 +2413,21 @@ def analytics():
             "Excellent! Your budgeting habits are on track. Keep maintaining them."
         )
 
+    monthly_savings = convert_amount(total_income - total_expense)
+    projected_balance = convert_amount(
+        (total_income - total_expense) + total_investment
+    )
+
+    total_income = convert_amount(total_income)
+    total_expense = convert_amount(total_expense)
+    total_investment = convert_amount(total_investment)
+
+    expense_values = convert_list(expense_values)
+
+    income_data = convert_list(income_data)
+    expense_data = convert_list(expense_data)
+    saving_data = convert_list(saving_data)
+
     return render_template(
 
         "analytics.html",
@@ -2267,7 +2465,11 @@ def analytics():
 
         expense_data=expense_data,
 
-        saving_data=saving_data
+        saving_data=saving_data,
+
+        projected_balance=projected_balance,
+
+        currency_symbol=get_currency_symbol()
 
     )
 
@@ -2282,6 +2484,781 @@ def reports():
     return render_template("reports.html")
 
 
+
+def get_report_data(user_id, period, from_date=None, to_date=None):
+
+    today = datetime.today()
+
+    start_date = None
+    end_date = None
+
+    if period == "this_month":
+
+        start_date = today.replace(day=1)
+        end_date = today
+
+    elif period == "last_month":
+
+        first_this_month = today.replace(day=1)
+        end_date = first_this_month - timedelta(days=1)
+        start_date = end_date.replace(day=1)
+
+    elif period == "last_3_months":
+
+        start_date = today - timedelta(days=90)
+        end_date = today
+
+    elif period == "this_year":
+
+        start_date = today.replace(month=1, day=1)
+        end_date = today
+
+    elif period == "custom" and from_date and to_date:
+
+        start_date = datetime.strptime(from_date, "%Y-%m-%d")
+        end_date = datetime.strptime(to_date, "%Y-%m-%d")
+
+    income_query = Income.query.filter_by(user_id=user_id)
+
+    if start_date and end_date:
+        income_query = income_query.filter(
+            Income.income_date.between(start_date.date(), end_date.date())
+        )
+
+    incomes = income_query.all()
+
+    expense_query = Expense.query.filter_by(user_id=user_id)
+
+    if start_date and end_date:
+        expense_query = expense_query.filter(
+            Expense.expense_date.between(start_date.date(), end_date.date())
+        )
+
+    expenses = expense_query.all()
+
+    budget_query = Budget.query.filter_by(user_id=user_id)
+
+    if start_date and end_date:
+        budget_query = budget_query.filter(
+            Budget.created_at.between(start_date, end_date)
+        )
+
+    budgets = budget_query.all()
+
+    goal_query = Goal.query.filter_by(user_id=user_id)
+
+    if start_date and end_date:
+        goal_query = goal_query.filter(
+            Goal.created_at.between(start_date, end_date)
+        )
+
+    goals = goal_query.all()
+
+    investment_query = Investment.query.filter_by(user_id=user_id)
+
+    if start_date and end_date:
+        investment_query = investment_query.filter(
+            Investment.purchase_date.between(start_date.date(), end_date.date())
+        )
+
+    investments = investment_query.all()
+
+    notification_query = Notification.query.filter_by(user_id=user_id)
+
+    if start_date and end_date:
+        notification_query = notification_query.filter(
+            Notification.created_at.between(start_date, end_date)
+        )
+
+    notifications = notification_query.order_by(
+        Notification.created_at.desc()
+    ).all()
+
+    total_income = sum(i.amount for i in incomes)
+
+    total_expense = sum(e.amount for e in expenses)
+
+    total_savings = total_income - total_expense
+
+    total_investment = sum(
+        inv.quantity * inv.current_price
+        for inv in investments
+    )
+
+    net_worth = total_savings + total_investment
+
+    savings_rate = (
+        round((total_savings / total_income) * 100, 2)
+        if total_income > 0 else 0
+    )
+
+    health_score = 80
+
+    return {
+        "incomes": incomes,
+        "expenses": expenses,
+        "budgets": budgets,
+        "goals": goals,
+        "investments": investments,
+        "notifications": notifications,
+        "total_income": total_income,
+        "total_expense": total_expense,
+        "total_savings": total_savings,
+        "total_investment": total_investment,
+        "net_worth": net_worth,
+        "savings_rate": savings_rate,
+        "health_score": health_score,
+    }
+
+@app.route("/reports/preview")
+@login_required
+def report_preview():
+
+    period = request.args.get("period", "this_month")
+    from_date = request.args.get("from")
+    to_date = request.args.get("to")
+
+    report = get_report_data(
+        current_user.user_id,
+        period,
+        from_date,
+        to_date
+    )
+
+    # Convert summary values
+    report["total_income"] = convert_amount(report["total_income"])
+    report["total_expense"] = convert_amount(report["total_expense"])
+    report["total_savings"] = convert_amount(report["total_savings"])
+
+    # Income
+    for income in report["incomes"]:
+        income.converted_amount = convert_amount(income.amount)
+
+    # Expense
+    for expense in report["expenses"]:
+        expense.converted_amount = convert_amount(expense.amount)
+
+    # Budget
+    for budget in report["budgets"]:
+        budget.converted_amount = convert_amount(budget.budget_amount)
+
+    # Goal
+    for goal in report["goals"]:
+        goal.converted_target = convert_amount(goal.target_amount)
+        goal.converted_saved = convert_amount(goal.saved_amount)
+
+    # Investment
+    for investment in report["investments"]:
+        investment.converted_buy_price = convert_amount(investment.buy_price)
+        investment.converted_current_price = convert_amount(investment.current_price)
+        investment.converted_current_value = convert_amount(
+            investment.quantity * investment.current_price
+        )
+
+    report["currency_symbol"] = get_currency_symbol()
+    return render_template(
+        "report_preview.html",
+        **report
+    )
+
+@app.route("/reports/export/pdf")
+@login_required
+def export_pdf():
+
+    report = get_report_data(current_user.user_id)
+
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=30,
+        leftMargin=30,
+        topMargin=30,
+        bottomMargin=30
+    )
+
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    title_style = styles["Heading1"]
+
+    heading_style = styles["Heading2"]
+
+    normal = styles["BodyText"]
+
+    elements.append(
+        Paragraph("FinSight Financial Report", title_style)
+    )
+
+    elements.append(
+        Paragraph("<br/>", normal)
+    )
+
+    elements.append(
+        Paragraph(
+            f"<b>Name:</b> {current_user.fullname}",
+            normal
+        )
+    )
+
+    elements.append(
+        Paragraph(
+            f"<b>Email:</b> {current_user.email}",
+            normal
+        )
+    )
+
+    elements.append(
+        Paragraph("<br/>", normal)
+    )
+
+    elements.append(
+        Paragraph("Executive Summary", heading_style)
+    )
+
+    summary = [
+
+        ["Metric", "Value"],
+
+        ["Total Income", f"Rs {report['total_income']:,.2f}"],
+
+        ["Total Expense", f"Rs {report['total_expense']:,.2f}"],
+
+        ["Total Savings", f"Rs {report['total_savings']:,.2f}"],
+
+        ["Investment Value", f"Rs {report['total_investment']:,.2f}"],
+
+        ["Net Worth", f"RS {report['net_worth']:,.2f}"],
+
+        ["Savings Rate", f"{report['savings_rate']} %"],
+
+        ["Health Score", f"{report['health_score']}/100"]
+
+    ]
+
+    table = Table(summary, colWidths=[220, 220])
+
+    table.setStyle(TableStyle([
+
+        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#2563EB")),
+
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+
+        ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+
+        ("BACKGROUND", (0,1), (0,-1), colors.whitesmoke),
+
+        ("BOTTOMPADDING", (0,0), (-1,-1), 8),
+
+        ("TOPPADDING", (0,0), (-1,-1), 8),
+
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+
+    ]))
+
+    elements.append(table)
+
+    elements.append(
+        Paragraph("<br/><br/>", normal)
+    )
+
+    # -------------------------
+    # Income Details
+    # -------------------------
+
+    elements.append(
+        Paragraph("Income Details", heading_style)
+    )
+
+    income_data = [
+        ["Source", "Amount", "Date", "Description"]
+    ]
+
+    for income in report["incomes"]:
+        income_data.append([
+            income.source,
+            f"Rs. {income.amount:,.2f}",
+            income.income_date.strftime("%d-%m-%Y"),
+            income.description or "-"
+        ])
+
+    if len(income_data) == 1:
+        income_data.append(["No Income Records", "-", "-", "-"])
+
+    income_table = Table(
+        income_data,
+        colWidths=[120, 100, 100, 170]
+    )
+
+    income_table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#2563EB")),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ("TOPPADDING", (0,0), (-1,-1), 6),
+        ("BACKGROUND", (0,1), (-1,-1), colors.beige),
+    ]))
+
+    elements.append(income_table)
+
+    elements.append(
+        Paragraph("<br/><br/>", normal)
+    )
+
+    # -------------------------
+    # Expense Details
+    # -------------------------
+
+    elements.append(
+        Paragraph("Expense Details", heading_style)
+    )
+
+    expense_data = [
+        ["Category", "Amount", "Date", "Payment", "Description"]
+    ]
+
+    for expense in report["expenses"]:
+        expense_data.append([
+            expense.category,
+            f"Rs. {expense.amount:,.2f}",
+            expense.expense_date.strftime("%d-%m-%Y"),
+            expense.payment_method,
+            expense.description or "-"
+        ])
+
+    if len(expense_data) == 1:
+        expense_data.append(["No Expense Records", "-", "-", "-", "-"])
+
+    expense_table = Table(
+        expense_data,
+        colWidths=[90, 80, 90, 100, 160]
+    )
+
+    expense_table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#DC2626")),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ("TOPPADDING", (0,0), (-1,-1), 6),
+        ("BACKGROUND", (0,1), (-1,-1), colors.whitesmoke),
+    ]))
+
+    elements.append(expense_table)
+
+    elements.append(
+        Paragraph("<br/><br/>", normal)
+    )
+
+    # -------------------------
+    # Budget Details
+    # -------------------------
+
+    elements.append(
+        Paragraph("Budget Details", heading_style)
+    )
+
+    budget_data = [
+        ["Month", "Year", "Budget Amount"]
+    ]
+
+    for budget in report["budgets"]:
+        budget_data.append([
+            budget.budget_month,
+            str(budget.budget_year),
+            f"Rs. {budget.budget_amount:,.2f}"
+        ])
+
+    if len(budget_data) == 1:
+        budget_data.append(["-", "-", "No Budget Records"])
+
+    budget_table = Table(
+        budget_data,
+        colWidths=[180, 120, 180]
+    )
+
+    budget_table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#16A34A")),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ("TOPPADDING", (0,0), (-1,-1), 6),
+        ("BACKGROUND", (0,1), (-1,-1), colors.beige),
+    ]))
+
+    elements.append(budget_table)
+
+    elements.append(
+        Paragraph("<br/><br/>", normal)
+    )
+
+    # -------------------------
+    # Goals Progress
+    # -------------------------
+
+    elements.append(
+        Paragraph("Financial Goals", heading_style)
+    )
+
+    goal_data = [
+        ["Goal", "Target", "Saved", "Progress", "Target Date"]
+    ]
+
+    for goal in report["goals"]:
+
+        progress = 0
+
+        if goal.target_amount > 0:
+            progress = round(
+                (goal.saved_amount / goal.target_amount) * 100,
+                1
+            )
+
+        goal_data.append([
+            goal.goal_name,
+            f"Rs. {goal.target_amount:,.2f}",
+            f"Rs. {goal.saved_amount:,.2f}",
+            f"{progress}%",
+            goal.target_date.strftime("%d-%m-%Y")
+        ])
+
+    if len(goal_data) == 1:
+        goal_data.append(["No Goals", "-", "-", "-", "-"])
+
+    goal_table = Table(
+        goal_data,
+        colWidths=[130, 90, 90, 70, 120]
+    )
+
+    goal_table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#9333EA")),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ("TOPPADDING", (0,0), (-1,-1), 6),
+        ("BACKGROUND", (0,1), (-1,-1), colors.whitesmoke),
+    ]))
+
+    elements.append(goal_table)
+
+    elements.append(
+        Paragraph("<br/><br/>", normal)
+    )
+
+    # -------------------------
+    # Investment Details
+    # -------------------------
+
+    elements.append(
+        Paragraph("Investment Details", heading_style)
+    )
+
+    investment_data = [
+        ["Investment", "Type", "Quantity", "Current Value"]
+    ]
+
+    for investment in report["investments"]:
+
+        current_value = investment.quantity * investment.current_price
+
+        investment_data.append([
+            investment.investment_name,
+            investment.investment_type,
+            str(investment.quantity),
+            f"Rs. {current_value:,.2f}"
+        ])
+
+    if len(investment_data) == 1:
+        investment_data.append(["No Investments", "-", "-", "-"])
+
+    investment_table = Table(
+        investment_data,
+        colWidths=[160, 120, 80, 140]
+    )
+
+    investment_table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#F59E0B")),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ("TOPPADDING", (0,0), (-1,-1), 6),
+        ("BACKGROUND", (0,1), (-1,-1), colors.beige),
+    ]))
+
+    elements.append(investment_table)
+
+    elements.append(
+        Paragraph("<br/><br/>", normal)
+    )
+
+    # -------------------------
+    # Recent Notifications
+    # -------------------------
+
+    elements.append(
+        Paragraph("Recent Notifications", heading_style)
+    )
+
+    notification_data = [
+        ["Title", "Category", "Date"]
+    ]
+
+    for notification in report["notifications"][:10]:
+
+        notification_data.append([
+            notification.title,
+            notification.category,
+            notification.created_at.strftime("%d-%m-%Y")
+        ])
+
+    if len(notification_data) == 1:
+        notification_data.append(["No Notifications", "-", "-"])
+
+    notification_table = Table(
+        notification_data,
+        colWidths=[240, 120, 120]
+    )
+
+    notification_table.setStyle(TableStyle([
+        ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#2563EB")),
+        ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+        ("GRID", (0,0), (-1,-1), 0.5, colors.grey),
+        ("FONTNAME", (0,0), (-1,0), "Helvetica-Bold"),
+        ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ("TOPPADDING", (0,0), (-1,-1), 6),
+        ("BACKGROUND", (0,1), (-1,-1), colors.whitesmoke),
+    ]))
+
+    elements.append(notification_table)
+
+    elements.append(
+        Paragraph("<br/><br/>", normal)
+    )
+
+    from datetime import datetime
+
+    elements.append(
+        Paragraph(
+            f"<b>Report Generated On:</b> {datetime.now().strftime('%d-%m-%Y %I:%M %p')}",
+            normal
+        )
+    )
+
+    elements.append(
+        Paragraph(
+            "Generated by FinSight - Personal Finance Management System",
+            normal
+        )
+    )
+    doc.build(elements)
+
+    buffer.seek(0)
+
+    # Return the PDF as a download
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="FinSight_Financial_Report.pdf",
+        mimetype="application/pdf"
+    )
+
+# -------------------------
+# export excel
+# ------------------------
+@app.route("/reports/export/excel")
+@login_required
+def export_excel():
+
+    report = get_report_data(current_user.user_id)
+
+    wb = Workbook()
+
+    ws = wb.active
+
+    ws.title = "Financial Report"
+
+    title_font = Font(bold=True, size=16)
+
+    heading_font = Font(bold=True)
+
+    fill = PatternFill(
+        start_color="2563EB",
+        end_color="2563EB",
+        fill_type="solid"
+    )
+
+    ws["A1"] = "FinSight Financial Report"
+    ws["A1"].font = title_font
+
+    ws["A3"] = "Name"
+    ws["B3"] = current_user.fullname
+
+    ws["A4"] = "Email"
+    ws["B4"] = current_user.email
+
+    row = 6
+
+    ws.cell(row=row, column=1).value = "Executive Summary"
+    ws.cell(row=row, column=1).font = heading_font
+
+    row += 2
+
+    summary = [
+
+        ("Total Income", report["total_income"]),
+
+        ("Total Expense", report["total_expense"]),
+
+        ("Total Savings", report["total_savings"]),
+
+        ("Investment Value", report["total_investment"]),
+
+        ("Net Worth", report["net_worth"]),
+
+        ("Savings Rate", f"{report['savings_rate']}%"),
+
+        ("Health Score", report["health_score"])
+
+    ]
+
+    for metric, value in summary:
+
+        ws.cell(row=row, column=1).value = metric
+
+        ws.cell(row=row, column=2).value = value
+
+        row += 1
+
+    income_ws = wb.create_sheet("Income")
+
+    income_ws.append([
+        "Source",
+        "Amount",
+        "Date",
+        "Description"
+    ])
+
+    for cell in income_ws[1]:
+        cell.font = heading_font
+        cell.fill = fill
+
+    for income in report["incomes"]:
+
+        income_ws.append([
+            income.source,
+            income.amount,
+            income.income_date.strftime("%d-%m-%Y"),
+            income.description
+        ])
+
+    expense_ws = wb.create_sheet("Expenses")
+
+    expense_ws.append([
+        "Category",
+        "Amount",
+        "Date",
+        "Payment Method",
+        "Description"
+    ])
+
+    for cell in expense_ws[1]:
+        cell.font = heading_font
+        cell.fill = fill
+
+    for expense in report["expenses"]:
+
+        expense_ws.append([
+            expense.category,
+            expense.amount,
+            expense.expense_date.strftime("%d-%m-%Y"),
+            expense.payment_method,
+            expense.description
+        ])
+
+    budget_ws = wb.create_sheet("Budgets")
+
+    budget_ws.append([
+        "Month",
+        "Year",
+        "Budget Amount"
+    ])
+
+    for cell in budget_ws[1]:
+        cell.font = heading_font
+        cell.fill = fill
+
+    for budget in report["budgets"]:
+
+        budget_ws.append([
+            budget.budget_month,
+            budget.budget_year,
+            budget.budget_amount
+        ])
+
+    goal_ws = wb.create_sheet("Goals")
+
+    goal_ws.append([
+        "Goal",
+        "Target",
+        "Saved",
+        "Target Date"
+    ])
+
+    for cell in goal_ws[1]:
+        cell.font = heading_font
+        cell.fill = fill
+
+    for goal in report["goals"]:
+
+        goal_ws.append([
+            goal.goal_name,
+            goal.target_amount,
+            goal.saved_amount,
+            goal.target_date.strftime("%d-%m-%Y")
+        ])
+
+    investment_ws = wb.create_sheet("Investments")
+
+    investment_ws.append([
+        "Investment",
+        "Type",
+        "Quantity",
+        "Buy Price",
+        "Current Price"
+    ])
+
+    for cell in investment_ws[1]:
+        cell.font = heading_font
+        cell.fill = fill
+
+    for investment in report["investments"]:
+
+        investment_ws.append([
+            investment.investment_name,
+            investment.investment_type,
+            investment.quantity,
+            investment.buy_price,
+            investment.current_price
+        ])
+
+    buffer = BytesIO()
+
+    wb.save(buffer)
+
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="FinSight_Financial_Report.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 # -------------------------
 # SETTINGS
 # -------------------------
@@ -2289,8 +3266,80 @@ def reports():
 @app.route("/settings")
 @login_required
 def settings():
-    return render_template("settings.html")
 
+    settings = UserSettings.query.filter_by(
+        user_id=current_user.user_id
+    ).first()
+
+    if settings is None:
+        settings = UserSettings(user_id=current_user.user_id)
+        db.session.add(settings)
+        db.session.commit()
+
+    return render_template(
+        "settings.html",
+        settings=settings
+    )
+# -------------------------
+# UPDATE SETTINGS
+# -------------------------
+
+@app.route("/settings/update", methods=["POST"])
+@login_required
+def update_settings():
+
+    settings = UserSettings.query.filter_by(
+        user_id=current_user.user_id
+    ).first()
+
+    selected_currency = request.form.get("currency")
+
+    try:
+
+        if selected_currency == "INR":
+            exchange_rate = 1.0
+
+        else:
+
+            url = f"https://api.frankfurter.app/latest?from=INR&to={selected_currency}"
+
+            response = requests.get(url, timeout=10)
+
+            data = response.json()
+
+            exchange_rate = data["rates"][selected_currency]
+
+        settings.currency = selected_currency
+        settings.exchange_rate = exchange_rate
+        settings.last_updated = datetime.now()
+
+    except Exception:
+
+        flash(
+            "Unable to fetch latest exchange rates. Please connect to the internet and try again.",
+            "danger"
+        )
+
+        return redirect(url_for("settings"))
+
+    settings.theme = request.form.get("theme")
+
+    settings.budget_alert = "budget_alert" in request.form
+    settings.goal_reminder = "goal_reminder" in request.form
+    settings.investment_update = "investment_update" in request.form
+    settings.monthly_report = "monthly_report" in request.form
+
+    db.session.commit()
+
+    flash("Settings updated successfully!", "success")
+
+    return redirect(url_for("settings"))
+
+@app.route("/delete-account")
+@login_required
+def delete_account():
+
+    return "Delete Account feature coming soon!"
 
 # -------------------------
 # FORGOT PASSWORD
@@ -2536,6 +3585,8 @@ def login():
 
             login_user(user)
 
+            generate_notifications(user.user_id)
+
             flash("Login Successful!", "success")
 
             return redirect("/dashboard")
@@ -2776,6 +3827,22 @@ def spending_analysis():
     # RENDER
     # ------------------------------------------------------
 
+    total_expense = convert_amount(total_expense)
+    highest_amount = convert_amount(highest_amount)
+    lowest_amount = convert_amount(lowest_amount)
+    average_daily = convert_amount(average_daily)
+
+    converted_top_categories = []
+
+    for category, amount in top_categories:
+        converted_top_categories.append(
+            (category, convert_amount(amount))
+        )
+
+    top_categories = converted_top_categories
+
+    values = convert_list(values)
+
     return render_template(
 
         "spending_analysis.html",
@@ -2802,7 +3869,9 @@ def spending_analysis():
 
         top_categories=top_categories,
 
-        expense_categories=category_data
+        expense_categories=category_data,
+
+        currency_symbol=get_currency_symbol()
 
     )
 
@@ -3114,6 +4183,11 @@ def budget_recommendations():
             "message": "Set financial goals to track your future plans."
         })
 
+    total_income = convert_amount(total_income)
+    total_expense = convert_amount(total_expense)
+    total_budget = convert_amount(total_budget)
+    savings = convert_amount(savings)
+
     return render_template(
 
         "budget_recommendations.html",
@@ -3130,7 +4204,9 @@ def budget_recommendations():
 
         savings=savings,
 
-        recommendations=recommendations
+        recommendations=recommendations,
+
+        currency_symbol=get_currency_symbol()
 
     )
 
@@ -3370,6 +4446,7 @@ def health_score():
     # ------------------------------------------------------
     # RENDER PAGE
     # ------------------------------------------------------
+    portfolio_value = convert_amount(portfolio_value)
 
     return render_template(
 
@@ -3401,14 +4478,15 @@ def health_score():
 
         diversification=diversification,
 
-        risk_level=risk_level
+        risk_level=risk_level,
+
+        currency_symbol=get_currency_symbol()
 
     )
 
 # ==========================================================
 # END HEALTH SCORE
 # ==========================================================
-
 
 # ==========================================================
 # TRENDS & PREDICTIONS
@@ -3627,6 +4705,15 @@ def trends_predictions():
     else:
         predicted_expense = 0
 
+    avg_income = convert_amount(avg_income)
+    avg_expense = convert_amount(avg_expense)
+    avg_savings = convert_amount(avg_savings)
+    predicted_expense = convert_amount(predicted_expense)
+
+    income_data = convert_list(income_data)
+    expense_data = convert_list(expense_data)
+    savings_data = convert_list(savings_data)
+
     return render_template(
 
         "trends_predictions.html",
@@ -3659,7 +4746,9 @@ def trends_predictions():
 
         expense_ratio=expense_ratio,
 
-        activities=activities
+        activities=activities,
+
+        currency_symbol=get_currency_symbol()
 
     )
 
@@ -3670,204 +4759,93 @@ def trends_predictions():
 # ==========================================================
 # NOTIFICATIONS
 # ==========================================================
-
 @app.route("/notifications")
 @login_required
 def notifications():
 
-    notifications = []
-
-    # -----------------------------
-    # Expenses & Budget
-    # -----------------------------
-
-    expenses = Expense.query.filter_by(
+    notifications = Notification.query.filter_by(
         user_id=current_user.user_id
+    ).order_by(
+        Notification.created_at.desc()
     ).all()
 
-    budgets = Budget.query.filter_by(
-        user_id=current_user.user_id
-    ).all()
-
-    total_expense = sum(
-        expense.amount
-        for expense in expenses
-    )
-
-    total_budget = sum(
-        budget.budget_amount
-        for budget in budgets
-    )
-
-    if total_budget == 0:
-
-        notifications.append({
-
-            "type":"warning",
-
-            "title":"Budget",
-
-            "message":"Create a monthly budget."
-
-        })
-
-    elif total_expense > total_budget:
-
-        notifications.append({
-
-            "type":"danger",
-
-            "title":"Budget Alert",
-
-            "message":"You have exceeded your monthly budget."
-
-        })
-
-    elif total_budget > 0:
-
-        utilization = (
-            total_expense /
-            total_budget
-        ) * 100
-
-        if utilization >= 80:
-
-            notifications.append({
-
-                "type":"warning",
-
-                "title":"Budget Warning",
-
-                "message":"Budget utilization crossed 80%."
-
-            })
-
-    # -----------------------------
-    # Goals
-    # -----------------------------
-
-    goals = Goal.query.filter_by(
-        user_id=current_user.user_id
-    ).all()
-
-    for goal in goals:
-
-        if goal.saved_amount >= goal.target_amount:
-
-            notifications.append({
-
-                "type":"success",
-
-                "title":"Goal Completed",
-
-                "message":
-
-                f"{goal.goal_name} achieved."
-
-            })
-
-    # -----------------------------
-    # Investments
-    # -----------------------------
-
-    investments = Investment.query.filter_by(
-        user_id=current_user.user_id
-    ).all()
-
-    if len(investments)==0:
-
-        notifications.append({
-
-            "type":"info",
-
-            "title":"Investment",
-
-            "message":"Start investing to build wealth."
-
-        })
-
-    else:
-
-        notifications.append({
-
-            "type":"success",
-
-            "title":"Investment",
-
-            "message":"Portfolio is active."
-
-        })
-
-    # -----------------------------
-    # Health Score
-    # -----------------------------
-
-    incomes = Income.query.filter_by(
-        user_id=current_user.user_id
-    ).all()
-
-    total_income = sum(
-        income.amount
-        for income in incomes
-    )
-
-    score = 100
-
-    if total_income>0:
-
-        ratio = (
-            total_expense /
-            total_income
-        )*100
-
-        if ratio>90:
-
-            score -=30
-
-        elif ratio>75:
-
-            score -=20
-
-        elif ratio>60:
-
-            score -=10
-
-    if score<60:
-
-        notifications.append({
-
-            "type":"danger",
-
-            "title":"Financial Health",
-
-            "message":"Your financial health score is low."
-
-        })
-
-    else:
-
-        notifications.append({
-
-            "type":"success",
-
-            "title":"Financial Health",
-
-            "message":"Your financial health is good."
-
-        })
+    unread_count = Notification.query.filter_by(
+        user_id=current_user.user_id,
+        is_read=False
+    ).count()
 
     return render_template(
-
         "notifications.html",
-
-        notifications=notifications
-
+        notifications=notifications,
+        unread_count=unread_count
     )
 
 # ==========================================================
 # END NOTIFICATIONS
 # ==========================================================
+@app.route("/notification/read/<int:notification_id>")
+@login_required
+def mark_notification_read(notification_id):
 
+    notification = Notification.query.filter_by(
+        notification_id=notification_id,
+        user_id=current_user.user_id
+    ).first_or_404()
+
+    notification.is_read = True
+
+    db.session.commit()
+
+    return redirect(url_for("notifications"))
+
+
+@app.route("/notifications/read-all")
+@login_required
+def mark_all_notifications_read():
+
+    Notification.query.filter_by(
+        user_id=current_user.user_id,
+        is_read=False
+    ).update({"is_read": True})
+
+    db.session.commit()
+
+    flash("All notifications marked as read.", "success")
+
+    return redirect(url_for("notifications"))
+
+
+@app.route("/notification/delete/<int:notification_id>")
+@login_required
+def delete_notification(notification_id):
+
+    notification = Notification.query.filter_by(
+        notification_id=notification_id,
+        user_id=current_user.user_id
+    ).first_or_404()
+
+    db.session.delete(notification)
+
+    db.session.commit()
+
+    flash("Notification deleted.", "success")
+
+    return redirect(url_for("notifications"))
+
+
+@app.route("/notifications/clear")
+@login_required
+def clear_notifications():
+
+    Notification.query.filter_by(
+        user_id=current_user.user_id
+    ).delete()
+
+    db.session.commit()
+
+    flash("All notifications cleared.", "success")
+
+    return redirect(url_for("notifications"))
 
 # ==========================================================
 # EDIT INCOME
@@ -3902,10 +4880,11 @@ def edit_income(income_id):
         )
 
         return redirect(url_for("income"))
-
+    income.converted_amount = convert_amount(income.amount)
     return render_template(
         "edit_income.html",
-        income=income
+        income=income,
+        currency_symbol=get_currency_symbol()
     )
 
 # ==========================================================
@@ -3971,10 +4950,11 @@ def edit_budget(budget_id):
         )
 
         return redirect(url_for("budgets"))
-
+    budget.converted_amount = convert_amount(budget.budget_amount)
     return render_template(
         "edit_budget.html",
-        budget=budget
+        budget=budget,
+        currency_symbol=get_currency_symbol()
     )
 
 # ==========================================================
@@ -4008,7 +4988,55 @@ def delete_budget(budget_id):
 # ==========================================================
 # END DELETE BUDGET
 # ==========================================================
+@app.context_processor
+def inject_sidebar_data():
+    if not current_user.is_authenticated:
+        return {}
 
+    from datetime import date
+
+    today = date.today()
+
+    monthly_income = db.session.query(
+        db.func.sum(Income.amount)
+    ).filter(
+        Income.user_id == current_user.user_id,
+        db.extract("month", Income.income_date) == today.month,
+        db.extract("year", Income.income_date) == today.year
+    ).scalar() or 0
+
+    monthly_expense = db.session.query(
+        db.func.sum(Expense.amount)
+    ).filter(
+        Expense.user_id == current_user.user_id,
+        db.extract("month", Expense.expense_date) == today.month,
+        db.extract("year", Expense.expense_date) == today.year
+    ).scalar() or 0
+
+    monthly_savings = monthly_income - monthly_expense
+
+    return {
+        "monthly_income": convert_amount(monthly_income),
+        "monthly_expense": convert_amount(monthly_expense),
+        "monthly_savings": convert_amount(monthly_savings),
+        "currency_symbol": get_currency_symbol()
+    }
+
+
+
+@app.context_processor
+def inject_theme():
+
+    if current_user.is_authenticated:
+
+        settings = UserSettings.query.filter_by(
+            user_id=current_user.user_id
+        ).first()
+
+        if settings:
+            return {"theme": settings.theme}
+
+    return {"theme": "light"}
 # -------------------------
 # CREATE DATABASE TABLES
 # -------------------------

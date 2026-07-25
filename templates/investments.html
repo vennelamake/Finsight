@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
     <meta charset="UTF-8">
 
@@ -25,9 +24,7 @@
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/investments.css') }}">
 
-</head>
 
-<body>
 <div class="container mt-4">
 
     {% include 'includes/investment_navbar.html' %}
@@ -63,7 +60,7 @@
 
                             <h4 class="text-primary mb-1">
 
-                                ₹ {{ "%.2f"|format(total_investment) }}
+                                {{ currency_symbol }}{{ "%.2f"|format(total_investment) }}
 
                             </h4>
 
@@ -95,7 +92,7 @@
 
                             <h4 class="text-success mb-1">
 
-                                ₹ {{ "%.2f"|format(current_value) }}
+                                {{ currency_symbol }}{{ "%.2f"|format(current_value) }}
 
                             </h4>
 
@@ -127,18 +124,17 @@
 
                             <h4 class="{% if total_profit >= 0 %}text-success{% else %}text-danger{% endif %} mb-1">
 
-                                ₹ {{ "%.2f"|format(total_profit) }}
+                                {{ currency_symbol }}{{ "%.2f"|format(total_profit) }}
 
                                 <small class="text-muted">
 
                                     Realized:
-                                    ₹ {{ "%.2f"|format(realized_profit) }}
+                                    {{ currency_symbol }}{{ "%.2f"|format(realized_profit) }}
 
                                     |
 
                                     Unrealized:
-                                    ₹ {{ "%.2f"|format(unrealized_profit) }}
-
+                                    {{ currency_symbol }}{{ "%.2f"|format(unrealized_profit) }}
                                 </small>
 
                             </h4>
@@ -203,7 +199,7 @@
 
                 <div class="card shadow-sm border-0 h-100">
 
-                    <div class="card-header bg-white">
+                    <div class="card-header ">
 
                         <h5 class="mb-0">
 
@@ -234,7 +230,7 @@
 
                 <div class="card shadow-sm border-0 h-100">
 
-                    <div class="card-header bg-white">
+                    <div class="card-header">
 
                         <h5 class="mb-0">
 
@@ -268,7 +264,7 @@
 
                 <div class="col-12">
 
-                    <div class="alert alert-info shadow-sm">
+                    <div class="alert shadow-sm">
 
                         <h5>
 
@@ -296,7 +292,7 @@
 
                 <div class="card shadow-sm border-0">
 
-                    <div class="card-header bg-white">
+                    <div class="card-header ">
 
                         <h5 class="mb-0">
 
@@ -312,7 +308,7 @@
 
                         <table class="table table-hover">
 
-                            <thead class="table-light">
+                            <thead>
 
                             <tr>
 
@@ -340,7 +336,7 @@
 
                                 <td>
 
-                                ₹ {{ "%.2f"|format(investment.quantity * investment.current_price) }}
+                                {{ currency_symbol }}{{ "%.2f"|format(investment.converted_current_value) }}
 
                                 </td>
 
@@ -379,7 +375,7 @@
 
                 <div class="card shadow-sm border-0">
 
-                    <div class="card-header bg-white">
+                    <div class="card-header ">
 
                         <h5 class="mb-0">
 
@@ -419,11 +415,11 @@
 
                                         {% if name == "Bitcoin" %}
 
-                                            ₹ {{ "{:,.2f}".format(data.price) }}
+                                            {{ currency_symbol }}{{ "{:,.2f}".format(data.price) }}
 
                                         {% elif name == "Gold" %}
 
-                                            ₹ {{ "{:,.2f}".format(data.price) }} / 10g
+                                            {{ currency_symbol }}{{ "{:,.2f}".format(data.price) }} / 10g
 
                                         {% else %}
 
@@ -598,6 +594,4 @@
         });
         
         </script>
-        </body>
-
-        </html>
+        {% endblock %}

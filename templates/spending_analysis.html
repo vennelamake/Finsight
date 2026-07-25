@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
+
+{% block content %}
 
 <!-- ====================================================== -->
 <!-- HEAD SECTION START -->
 <!-- ====================================================== -->
-
-<head>
 
     <meta charset="UTF-8">
 
@@ -35,15 +34,56 @@
         justify-content:center;
     }
 
+    /* ===========================
+    DARK MODE
+    =========================== */
+
+    body.dark .card{
+        background:var(--card);
+        color:var(--text);
+        border:1px solid var(--border);
+    }
+
+    body.dark .card-header{
+        background:#2563eb;
+        color:#fff;
+        border-bottom:none;
+    }
+
+    body.dark .card-body{
+        background:var(--card);
+        color:var(--text);
+    }
+
+    body.dark .summary-card{
+        background:var(--card);
+    }
+
+    body.dark .text-muted{
+        color:var(--text-secondary) !important;
+    }
+
+    body.dark .progress{
+        background:#3a3a3a;
+    }
+
+    body.dark .btn-outline-primary{
+        color:#8ab4ff;
+        border-color:#8ab4ff;
+    }
+
+    body.dark .btn-outline-primary:hover{
+        background:#0d6efd;
+        color:#fff;
+    }
+
     </style>
 
-</head>
+
 
 <!-- ====================================================== -->
 <!-- HEAD SECTION END -->
 <!-- ====================================================== -->
-
-<body class="bg-light">
 
 <div class="container-fluid py-4">
 
@@ -114,7 +154,7 @@
 
                 <h3 class="text-danger mt-2">
 
-                    ₹ {{ "%.2f"|format(total_expense) }}
+                    {{ currency_symbol }}{{ "%.2f"|format(total_expense) }}
 
                 </h3>
 
@@ -139,7 +179,7 @@
                 <h4 class="mt-2 mb-1">{{ highest_category }}</h4>
 
                 <div class="fw-bold text-success">
-                    ₹ {{ "%.2f"|format(highest_amount) }}
+                    {{ currency_symbol }}{{ "%.2f"|format(highest_amount) }}
                 </div>
 
                 <small class="text-muted">
@@ -172,7 +212,7 @@
 
                 <small class="text-primary">
 
-                    ₹ {{ "%.2f"|format(lowest_amount) }}
+                    {{ currency_symbol }}{{ "%.2f"|format(lowest_amount) }}
 
                 </small>
 
@@ -196,7 +236,7 @@
 
                 <h3 class="text-warning mt-2">
 
-                    ₹ {{ "%.2f"|format(average_daily) }}
+                    {{ currency_symbol }}{{ "%.2f"|format(average_daily) }}
 
                 </h3>
 
@@ -283,7 +323,7 @@
 
                             <span>
 
-                                ₹ {{ "%.2f"|format(amount) }}
+                                {{ currency_symbol }}{{ "%.2f"|format(amount) }}
 
                                 ({{ "%.1f"|format(percent) }}%)
 
@@ -316,77 +356,6 @@
 
 <!-- ====================================================== -->
 <!-- TOP CATEGORY TABLE END -->
-<!-- ====================================================== -->
-
-
-<!-- ====================================================== -->
-<!-- EXPENSE INSIGHTS START -->
-<!-- ====================================================== -->
-
-<div class="row mt-4">
-
-    <div class="col-lg-12">
-
-        <div class="card shadow-sm border-0">
-
-            <div class="card-header bg-primary text-white">
-
-                <h5 class="mb-0">
-
-                    Spending Insights
-
-                </h5>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="row text-center">
-
-                    <div class="col-md-3 mb-3">
-                        <div class="border rounded p-3">
-                            <h6 class="text-muted">Total Expenses</h6>
-                            <h4 class="text-danger">
-                                ₹ {{ "%.2f"|format(total_expense) }}
-                            </h4>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3">
-                        <div class="border rounded p-3">
-                            <h6 class="text-muted">Highest Category</h6>
-                            <h5>{{ highest_category }}</h5>
-                            <small>{{ "%.1f"|format(highest_percentage) }}% of expenses</small>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3">
-                        <div class="border rounded p-3">
-                            <h6 class="text-muted">Categories Used</h6>
-                            <h4>{{ total_categories }}</h4>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3">
-                        <div class="border rounded p-3">
-                            <h6 class="text-muted">Average Daily</h6>
-                            <h4 class="text-warning">
-                                ₹ {{ "%.2f"|format(average_daily) }}
-                            </h4>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- ====================================================== -->
-<!-- EXPENSE INSIGHTS END -->
 <!-- ====================================================== -->
 
 
@@ -440,9 +409,10 @@ maintainAspectRatio:false,
 plugins:{
 
 legend:{
-
-position:"right"
-
+    position:"right",
+    labels:{
+        color:getComputedStyle(document.body).getPropertyValue('--text')
+    }
 }
 
 }
@@ -461,6 +431,4 @@ position:"right"
 
 </div>
 
-</body>
-
-</html>
+{% endblock %}

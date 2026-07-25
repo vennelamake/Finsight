@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
     <meta charset="UTF-8">
 
@@ -24,10 +23,6 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/investments.css') }}">
-
-</head>
-
-<body>
 
 <div class="container mt-4">
 
@@ -134,17 +129,17 @@
 
                     <td>{{ investment.quantity }}</td>
 
-                    <td>₹ {{ "%.2f"|format(investment.buy_price) }}</td>
+                    <td>{{ currency_symbol }}{{ "%.2f"|format(investment.converted_buy_price) }}</td>
 
-                    <td>₹ {{ "%.2f"|format(investment.current_price) }}</td>
+                    <td>{{ currency_symbol }}{{ "%.2f"|format(investment.converted_current_price) }}</td>
 
-                    <td>₹ {{ "%.2f"|format(invested) }}</td>
+                    <td>{{ currency_symbol }}{{ "%.2f"|format(investment.converted_invested) }}</td>
 
-                    <td>₹ {{ "%.2f"|format(current) }}</td>
+                    <td>{{ currency_symbol }}{{ "%.2f"|format(investment.converted_current_value) }}</td>
 
                     <td class="{% if profit>=0 %}text-success{% else %}text-danger{% endif %}">
 
-                        ₹ {{ "%.2f"|format(profit) }}
+                        {{ currency_symbol }}{{ "%.2f"|format(investment.converted_profit) }}
 
                     </td>
 
@@ -348,6 +343,4 @@ filterBox.addEventListener("change", filterTable);
 
 </script>
 
-</body>
-
-</html>
+{% endblock %}

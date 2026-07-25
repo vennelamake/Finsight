@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
     <meta charset="UTF-8">
 
@@ -15,10 +14,6 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/investments.css') }}">
-
-</head>
-
-<body>
 
 <div class="container mt-4">
 
@@ -105,11 +100,11 @@
                             </td>
 
                             <td>
-                                ₹ {{ "%.2f"|format(transaction.price) }}
+                                {{ currency_symbol }}{{ "%.2f"|format(transaction.converted_price) }}
                             </td>
 
                             <td>
-                                ₹ {{ "%.2f"|format(total_amount) }}
+                                {{ currency_symbol }}{{ "%.2f"|format(item.converted_total_amount) }}
                             </td>
 
                             <td>
@@ -124,7 +119,7 @@
                                     {% endif %}
                                 ">
 
-                                    ₹ {{ "%.2f"|format(item.realized_profit) }}
+                                    {{ currency_symbol }}{{ "%.2f"|format(item.converted_realized_profit) }}
 
                                 </span>
 
@@ -178,6 +173,4 @@
 
 </div>
 
-</body>
-
-</html>
+{% endblock %}

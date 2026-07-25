@@ -1,47 +1,142 @@
-/* ===========================
-   DASHBOARD
-=========================== */
+/* =====================================================
+   DASHBOARD - PART 1
+   Professional Light & Dark Theme
+===================================================== */
 
-.content{
-    background:#f5f7fb;
-    min-height:100vh;
+/* ==========================
+   THEME VARIABLES
+========================== */
+
+:root{
+
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --card-header:#ffffff;
+
+    --text:#212529;
+    --text-muted:#6c757d;
+
+    --border:#e9ecef;
+
+    --hover:#f3f8ff;
+
+    --progress:#e9ecef;
+
+    --shadow:0 8px 20px rgba(0,0,0,.08);
+
 }
 
-.card{
-    border:none;
-    border-radius:18px;
+body.dark{
+
+    --bg:#121212;
+
+    --card:#1f1f1f;
+
+    --card-header:#1f1f1f;
+
+    --text:#ffffff;
+
+    --text-muted:#c9c9c9;
+
+    --border:#333;
+
+    --hover:#2d2d2d;
+
+    --progress:#303030;
+
+    --shadow:none;
+
+}
+
+/* ==========================
+   CONTENT
+========================== */
+
+.content{
+
+    background:var(--bg);
+
+    min-height:100vh;
+
+    color:var(--text);
+
     transition:.3s;
+
+}
+
+/* ==========================
+   CARDS
+========================== */
+
+.card{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    transition:.3s;
+
+    box-shadow:var(--shadow);
+
 }
 
 .card:hover{
+
     transform:translateY(-3px);
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    box-shadow:0 12px 28px rgba(0,0,0,.10);
+
+}
+
+body.dark .card:hover{
+
+    box-shadow:none;
+
 }
 
 .card-body{
+
     padding:25px;
+
 }
 
 .card h3{
+
+    color:var(--text);
+
     font-weight:700;
+
 }
 
 .card h5{
+
+    color:var(--text);
+
     font-weight:600;
+
 }
 
 .card h6{
-    color:#777;
+
+    color:var(--text-muted);
+
     font-size:14px;
+
 }
 
 .fa-3x{
+
     opacity:.9;
+
 }
 
-/* ===========================
+/* ==========================
    SUMMARY CARDS
-=========================== */
+========================== */
 
 .row.g-4 .card{
 
@@ -49,41 +144,55 @@
 
 }
 
+/* Bootstrap Colors */
+
 .text-success{
+
     color:#16a34a !important;
+
 }
 
 .text-danger{
+
     color:#dc2626 !important;
+
 }
 
 .text-warning{
+
     color:#d97706 !important;
+
 }
 
 .text-primary{
+
     color:#2563eb !important;
+
 }
 
-/* ===========================
+/* ==========================
    CHART CARDS
-=========================== */
+========================== */
 
 .card-header{
 
-    background:white !important;
+    background:var(--card-header);
 
-    border-bottom:1px solid #ececec;
+    color:var(--text);
 
-    font-weight:600;
+    border-bottom:1px solid var(--border);
 
     padding:18px 25px;
+
+    font-weight:600;
 
 }
 
 .card-header h5{
 
     margin:0;
+
+    color:var(--text);
 
 }
 
@@ -93,25 +202,25 @@ canvas{
 
 }
 
-/* ===========================
+/* ==========================
    TABLE
-=========================== */
+========================== */
 
 .table{
 
     margin-bottom:0;
 
-}
-
-.table thead{
-
-    background:#2563eb;
-
-    color:white;
+    color:var(--text);
 
 }
+
+/* Header */
 
 .table thead th{
+
+    background:#2563eb !important;
+
+    color:#fff !important;
 
     border:none;
 
@@ -121,7 +230,15 @@ canvas{
 
 }
 
+/* Body */
+
 .table tbody td{
+
+    background:var(--card) !important;
+
+    color:var(--text);
+
+    border-color:var(--border);
 
     padding:14px;
 
@@ -129,15 +246,17 @@ canvas{
 
 }
 
-.table-hover tbody tr:hover{
+/* Hover */
 
-    background:#f3f8ff;
+.table-hover tbody tr:hover td{
+
+    background:var(--hover) !important;
 
 }
 
-/* ===========================
+/* ==========================
    BADGES
-=========================== */
+========================== */
 
 .badge{
 
@@ -149,9 +268,9 @@ canvas{
 
 }
 
-/* ===========================
-   PROGRESS BARS
-=========================== */
+/* ==========================
+   PROGRESS BAR
+========================== */
 
 .progress{
 
@@ -159,17 +278,13 @@ canvas{
 
     border-radius:30px;
 
-    background:#e9ecef;
-
     overflow:hidden;
+
+    background:var(--progress);
 
 }
 
 .progress-bar{
-
-    font-weight:600;
-
-    font-size:13px;
 
     display:flex;
 
@@ -177,13 +292,23 @@ canvas{
 
     justify-content:center;
 
+    font-size:13px;
+
+    font-weight:600;
+
 }
 
-/* ===========================
+/* =====================================================
+   DASHBOARD - PART 2
+===================================================== */
+
+/* ==========================
    GOALS
-=========================== */
+========================== */
 
 .card-body h6{
+
+    color:var(--text);
 
     font-weight:600;
 
@@ -199,15 +324,15 @@ canvas{
 
 }
 
-/* ===========================
-   BUDGET CARD
-=========================== */
+/* ==========================
+   ALERTS
+========================== */
 
 .alert{
 
-    border-radius:12px;
-
     border:none;
+
+    border-radius:12px;
 
     font-weight:600;
 
@@ -229,9 +354,9 @@ canvas{
 
 }
 
-/* ===========================
+/* ==========================
    BUTTONS
-=========================== */
+========================== */
 
 .btn{
 
@@ -255,9 +380,149 @@ canvas{
 
 }
 
-/* ===========================
+body.dark .btn-light{
+
+    background:#2d2d2d;
+
+    color:#fff;
+
+    border-color:#444;
+
+}
+
+body.dark .btn-outline-secondary{
+
+    color:#fff;
+
+    border-color:#666;
+
+}
+
+body.dark .btn-outline-secondary:hover{
+
+    background:#444;
+
+    color:#fff;
+
+}
+
+/* ==========================
+   FORMS
+========================== */
+
+body.dark input,
+
+body.dark textarea,
+
+body.dark select,
+
+body.dark .form-control,
+
+body.dark .form-select{
+
+    background:#2b2b2b;
+
+    color:#fff;
+
+    border:1px solid #444;
+
+}
+
+body.dark input::placeholder,
+
+body.dark textarea::placeholder{
+
+    color:#bdbdbd;
+
+}
+
+body.dark input:focus,
+
+body.dark textarea:focus,
+
+body.dark select:focus,
+
+body.dark .form-control:focus{
+
+    background:#2b2b2b;
+
+    color:#fff;
+
+    border-color:#2563eb;
+
+    box-shadow:none;
+
+}
+
+/* Keep native dropdown arrow visible */
+
+body.dark select{
+
+    appearance:auto;
+
+}
+
+/* ==========================
+   LINKS
+========================== */
+
+body.dark a{
+
+    color:#7cb8ff;
+
+}
+
+body.dark a:hover{
+
+    color:#9bcaff;
+
+}
+
+/* ==========================
+   TABLE DARK FIXES
+========================== */
+
+body.dark table{
+
+    color:#fff;
+
+}
+
+body.dark table tbody td{
+
+    color:#fff;
+
+}
+
+body.dark table tbody tr{
+
+    background:var(--card);
+
+}
+
+body.dark table tbody tr:hover td{
+
+    background:var(--hover);
+
+}
+
+/* ==========================
+   CARD FOOTERS
+========================== */
+
+.card-footer{
+
+    background:var(--card-header);
+
+    color:var(--text);
+
+    border-top:1px solid var(--border);
+
+}
+
+/* ==========================
    RESPONSIVE
-=========================== */
+========================== */
 
 @media(max-width:992px){
 
@@ -274,6 +539,8 @@ canvas{
     h2{
 
         font-size:24px;
+
+        color:var(--text);
 
     }
 
@@ -301,9 +568,9 @@ canvas{
 
 }
 
-/* ===========================
+/* ==========================
    ANIMATION
-=========================== */
+========================== */
 
 .card{
 
@@ -328,5 +595,83 @@ canvas{
         transform:translateY(0);
 
     }
+
+}
+
+/* ==========================
+   DARK MODE FIXES
+========================== */
+
+body.dark .card-header,
+
+body.dark .card-body,
+
+body.dark .card-footer{
+
+    color:var(--text);
+
+}
+
+body.dark .dropdown-menu{
+
+    background:#1f1f1f;
+
+    border:1px solid #333;
+
+}
+
+body.dark .dropdown-item{
+
+    color:#fff;
+
+}
+
+body.dark .dropdown-item:hover{
+
+    background:#2d2d2d;
+
+}
+
+body.dark .badge{
+
+    color:#fff;
+
+}
+
+body.dark hr{
+
+    border-color:#333;
+
+}
+
+body.dark .text-muted{
+
+    color:var(--text-muted) !important;
+
+}
+
+body.dark .modal-content{
+
+    background:var(--card);
+
+    color:var(--text);
+
+}
+
+body.dark .modal-header,
+
+body.dark .modal-footer{
+
+    border-color:var(--border);
+
+}
+
+body.dark .list-group-item{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border-color:var(--border);
 
 }

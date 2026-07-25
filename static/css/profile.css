@@ -1,4 +1,12 @@
+/* ==========================================================
+                    PROFILE CSS
+========================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ==========================================================
+                    GLOBAL
+========================================================== */
 
 *{
     margin:0;
@@ -7,11 +15,21 @@
     font-family:'Poppins',sans-serif;
 }
 
+/* ==========================================================
+                    BODY
+========================================================== */
+
 body{
 
-    background:#f4f7fb;
+    background:var(--bg);
+
+    color:var(--text);
 
 }
+
+/* ==========================================================
+                    CONTAINER
+========================================================== */
 
 .container{
 
@@ -19,17 +37,29 @@ body{
 
 }
 
+/* ==========================================================
+                    PROFILE CARD
+========================================================== */
+
 .profile-card{
 
-    background:white;
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
 
     border-radius:20px;
 
     padding:40px;
 
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    box-shadow:var(--shadow);
 
 }
+
+/* ==========================================================
+                    PROFILE HEADER
+========================================================== */
 
 .profile-header{
 
@@ -57,31 +87,69 @@ body{
 
 .profile-header h2{
 
-    font-weight:700;
+    color:var(--text);
 
-    color:#1e293b;
+    font-weight:700;
 
 }
 
 .profile-header p{
 
-    color:#64748b;
+    color:var(--text-secondary);
 
 }
+
+/* ==========================================================
+                    LABELS
+========================================================== */
 
 label{
 
-    font-weight:600;
+    display:block;
 
     margin-bottom:8px;
 
+    font-weight:600;
+
+    color:var(--text);
+
 }
+
+/* ==========================================================
+                    INPUTS
+========================================================== */
 
 .form-control{
 
     height:48px;
 
     border-radius:10px;
+
+    border:1px solid var(--border);
+
+    background:var(--card);
+
+    color:var(--text);
+
+    transition:.3s;
+
+}
+
+.form-control::placeholder{
+
+    color:var(--text-secondary);
+
+}
+
+.form-control:focus{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border-color:#2563eb;
+
+    box-shadow:none;
 
 }
 
@@ -90,6 +158,10 @@ textarea.form-control{
     height:120px;
 
 }
+
+/* ==========================================================
+                    BUTTONS
+========================================================== */
 
 .btn-primary{
 
@@ -103,10 +175,66 @@ textarea.form-control{
 
     font-weight:600;
 
+    transition:.3s;
+
 }
 
 .btn-primary:hover{
 
     background:#1d4ed8;
+
+}
+
+/* ==========================================================
+                    DARK MODE FIXES
+========================================================== */
+
+body.dark .profile-card{
+
+    background:var(--card);
+
+    color:var(--text);
+
+}
+
+body.dark .profile-header h2{
+
+    color:var(--text);
+
+}
+
+body.dark .profile-header p{
+
+    color:var(--text-secondary);
+
+}
+
+body.dark label{
+
+    color:var(--text);
+
+}
+
+body.dark .form-control{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border-color:var(--border);
+
+}
+
+body.dark .form-control::placeholder{
+
+    color:var(--text-secondary);
+
+}
+
+body.dark .form-control:focus{
+
+    background:var(--card);
+
+    color:var(--text);
 
 }

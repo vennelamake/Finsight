@@ -1,22 +1,40 @@
+/* ==========================================================
+                    INVESTMENTS CSS
+========================================================== */
+
 body{
 
-    background:#f4f7fb;
+    background:var(--bg);
 
-    font-family:Poppins,sans-serif;
+    color:var(--text);
+
+    font-family:'Poppins',sans-serif;
 
 }
 
+/* ==========================================================
+                    MAIN CARD
+========================================================== */
+
 .expense-card{
 
-    background:white;
+    background:var(--card);
+
+    color:var(--text);
 
     padding:35px;
 
     border-radius:18px;
 
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    border:1px solid var(--border);
+
+    box-shadow:var(--shadow);
 
 }
+
+/* ==========================================================
+                    HEADINGS
+========================================================== */
 
 h2{
 
@@ -28,11 +46,39 @@ h2{
 
 }
 
+/* ==========================================================
+                    FORM CONTROLS
+========================================================== */
+
 .form-control{
 
     height:48px;
 
     border-radius:10px;
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+}
+
+.form-control:focus{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border-color:#2563eb;
+
+    box-shadow:none;
+
+}
+
+.form-control::placeholder{
+
+    color:var(--text-secondary);
 
 }
 
@@ -41,6 +87,10 @@ textarea.form-control{
     height:120px;
 
 }
+
+/* ==========================================================
+                    BUTTONS
+========================================================== */
 
 .btn-primary{
 
@@ -52,37 +102,63 @@ textarea.form-control{
 
     border-radius:10px;
 
+    transition:.3s;
+
 }
 
+.btn-primary:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* ==========================================================
+                    NAV PILLS
+========================================================== */
+
 .nav-pills{
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 8px;
-    margin-bottom: 20px;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    box-shadow:var(--shadow);
+
+    padding:8px;
+
+    margin-bottom:20px;
+
 }
 
 .nav-pills .nav-link{
+
     color:#0d6efd;
+
     border-radius:10px;
-    transition:0.3s;
-    
+
+    transition:.3s;
+
 }
 
 .nav-pills .nav-link:hover{
-    background:#e9f2ff;
+
+    background:rgba(13,110,253,.12);
+
 }
 
 .nav-pills .nav-link.active{
+
     background:#0d6efd;
-    color:white;
+
+    color:#fff;
+
 }
 
-/* ------------------------------
-   Chart Containers
--------------------------------*/
-
-/* Asset Allocation */
+/* ==========================================================
+                    CHART CONTAINERS
+========================================================== */
 
 .allocation-chart{
 
@@ -104,11 +180,9 @@ textarea.form-control{
 
     height:220px !important;
 
-    aspect-ratio:1 / 1;
+    aspect-ratio:1/1;
 
 }
-
-/* Portfolio Performance */
 
 .performance-chart{
 
@@ -122,4 +196,124 @@ textarea.form-control{
 
     height:260px !important;
 
+}
+
+/* ==========================================================
+                    CANVAS
+========================================================== */
+
+canvas{
+
+    background:transparent !important;
+
+}
+
+/* ==========================================================
+                    DARK MODE
+========================================================== */
+
+body.dark .expense-card{
+
+    background:var(--card);
+
+    color:var(--text);
+
+}
+
+body.dark .nav-pills{
+
+    background:var(--card);
+
+    border-color:var(--border);
+
+}
+
+body.dark .nav-pills .nav-link{
+
+    color:#7cb8ff;
+
+}
+
+body.dark .nav-pills .nav-link:hover{
+
+    background:var(--hover);
+
+}
+
+body.dark .form-control{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border-color:var(--border);
+
+}
+
+body.dark .form-control::placeholder{
+
+    color:var(--text-secondary);
+
+}
+
+body.dark label{
+
+    color:var(--text);
+
+}
+
+body.dark h3,
+
+body.dark h4,
+
+body.dark h5,
+
+body.dark h6,
+
+body.dark p,
+
+body.dark span{
+
+    color:var(--text);
+
+}
+
+/* Cards */
+
+.card{
+    background:var(--card) !important;
+    color:var(--text) !important;
+    border:1px solid var(--border) !important;
+    box-shadow:var(--shadow);
+}
+
+.card-header{
+    background:var(--card) !important;
+    color:var(--text) !important;
+    border-bottom:1px solid var(--border) !important;
+}
+
+.card-body{
+    background:var(--card) !important;
+    color:var(--text) !important;
+}
+
+/* Tables */
+
+.table td{
+    background:var(--card) !important;
+    color:var(--text) !important;
+}
+
+.table thead th{
+    background:#2563eb !important;
+    color:#fff !important;
+}
+
+/* Alert */
+
+.alert{
+    background:var(--card) !important;
+    color:var(--text) !important;
+    border:1px solid var(--border) !important;
 }

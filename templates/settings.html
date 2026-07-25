@@ -1,11 +1,205 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Coming Soon</title>
-</head>
-<body>
+{% extends "layouts/base.html" %}
 
-<h1>Coming Soon</h1>
+{% block content %}
 
-</body>
-</html>
+<div class="settings-container">
+
+    <div class="page-header">
+        <h2><i class="fas fa-gear"></i> Settings</h2>
+        <p>Manage your preferences and application settings.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }} mt-3">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Preferences -->
+    <div class="settings-card">
+
+        <h4>
+            <i class="fas fa-sliders-h"></i>
+            Preferences
+        </h4>
+
+        <form action="/settings/update" method="POST">
+
+            <div class="form-group">
+
+                <label>Currency</label>
+
+                <select name="currency" class="form-control">
+
+                    <option value="INR" {% if settings.currency=="INR" %}selected{% endif %}>🇮🇳 INR - Indian Rupee</option>
+
+                    <option value="USD" {% if settings.currency=="USD" %}selected{% endif %}>🇺🇸 USD - US Dollar</option>
+
+                    <option value="EUR" {% if settings.currency=="EUR" %}selected{% endif %}>🇪🇺 EUR - Euro</option>
+
+                    <option value="GBP" {% if settings.currency=="GBP" %}selected{% endif %}>🇬🇧 GBP - British Pound</option>
+
+                    <option value="JPY" {% if settings.currency=="JPY" %}selected{% endif %}>🇯🇵 JPY - Japanese Yen</option>
+
+                    <option value="AUD" {% if settings.currency=="AUD" %}selected{% endif %}>🇦🇺 AUD - Australian Dollar</option>
+
+                    <option value="CAD" {% if settings.currency=="CAD" %}selected{% endif %}>🇨🇦 CAD - Canadian Dollar</option>
+
+                    <option value="AED" {% if settings.currency=="AED" %}selected{% endif %}>🇦🇪 AED - UAE Dirham</option>
+
+                    <option value="SGD" {% if settings.currency=="SGD" %}selected{% endif %}>🇸🇬 SGD - Singapore Dollar</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group mt-3">
+
+                <label>Theme</label>
+
+                <select name="theme" class="form-control">
+
+                    <option value="light"
+                        {% if settings.theme == "light" %}selected{% endif %}>
+                        Light
+                    </option>
+
+                    <option value="dark"
+                        {% if settings.theme == "dark" %}selected{% endif %}>
+                        Dark
+                    </option>
+
+                </select>
+
+            </div>
+
+    </div>
+
+    <!-- Notifications -->
+
+    <div class="settings-card mt-4">
+
+        <h4>
+
+            <i class="fas fa-bell"></i>
+
+            Notification Preferences
+
+        </h4>
+
+        <div class="form-check form-switch">
+
+            <input
+                class="form-check-input"
+                type="checkbox"
+                name="budget_alert"
+                {% if settings.budget_alert %}checked{% endif %}>
+
+            <label class="form-check-label">
+                Budget Alerts
+            </label>
+
+        </div>
+
+        <div class="form-check form-switch">
+
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="goal_reminder"
+
+                   {% if settings.goal_reminder %}checked{% endif %}>
+
+            <label class="form-check-label">
+                Goal Reminders
+            </label>
+
+        </div>
+
+        <div class="form-check form-switch">
+
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="investment_update"
+
+                   {% if settings.investment_update %}checked{% endif %}>
+
+            <label class="form-check-label">
+                Investment Updates
+            </label>
+
+        </div>
+
+        <div class="form-check form-switch">
+
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="monthly_report"
+
+                   {% if settings.monthly_report %}checked{% endif %}>
+
+            <label class="form-check-label">
+                Monthly Report Reminder
+            </label>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4">
+
+            <i class="fas fa-save"></i>
+
+            Save Preferences
+
+        </button>
+
+        </form>
+
+    </div>
+
+    <!-- Data -->
+
+    <div class="settings-card mt-4">
+
+        <h4>
+
+            <i class="fas fa-database"></i>
+
+            Data & Privacy
+
+        </h4>
+
+        <a href="{{ url_for('reports') }}" class="btn btn-outline-primary">
+            <i class="fas fa-download"></i>
+            Export Financial Reports
+        </a>
+
+        <button
+            type="button"
+            class="btn btn-outline-danger float-end"
+            onclick="confirmDelete()">
+
+            <i class="fas fa-trash"></i>
+            Delete Account
+
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+function confirmDelete() {
+
+    if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        window.location.href = "/delete-account";
+    }
+
+}
+</script>
+
+{% endblock %}

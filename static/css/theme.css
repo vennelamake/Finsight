@@ -1,0 +1,144 @@
+/* ==========================================================
+                    FinSight Theme
+========================================================== */
+
+/* ==========================================================
+                    LIGHT THEME
+========================================================== */
+
+:root{
+
+    --bg:#f5f7fb;
+
+    --card:#ffffff;
+
+    --text:#212529;
+
+    --text-secondary:#6b7280;
+
+    --border:#e5e7eb;
+
+    --hover:#f3f8ff;
+
+    --progress:#e9ecef;
+
+    --shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+/* ==========================================================
+                    LIGHT MODE
+========================================================== */
+
+body.light{
+
+    --bg:#f5f7fb;
+
+    --card:#ffffff;
+
+    --text:#212529;
+
+    --text-secondary:#6b7280;
+
+    --border:#e5e7eb;
+
+    --hover:#f3f8ff;
+
+    --progress:#e9ecef;
+
+    --shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+/* ==========================================================
+                    DARK MODE
+========================================================== */
+
+body.dark{
+
+    --bg:#121212;
+
+    --card:#1f1f1f;
+
+    --text:#f5f5f5;
+
+    --text-secondary:#b5b5b5;
+
+    --border:#333333;
+
+    --hover:#2b2b2b;
+
+    --progress:#3a3a3a;
+
+    --shadow:none;
+
+}
+
+/* ==========================================================
+                    GLOBAL
+========================================================== */
+
+html,
+body{
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    transition:
+        background .3s ease,
+        color .3s ease;
+
+}
+
+.main-container,
+.content,
+.container,
+.container-fluid{
+
+    background:var(--bg);
+
+    color:var(--text);
+
+}
+
+/* ==========================================================
+                    LINKS
+========================================================== */
+
+a{
+
+    transition:.25s;
+
+}
+
+/* ==========================================================
+                    SCROLLBAR
+========================================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:var(--card);
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#777;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#999;
+
+}
+

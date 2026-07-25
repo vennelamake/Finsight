@@ -1,11 +1,121 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Coming Soon</title>
-</head>
-<body>
+{% extends "layouts/base.html" %}
 
-<h1>Coming Soon</h1>
+{% block content %}
 
-</body>
-</html>
+<div class="reports-page">
+
+    <!-- Header -->
+    <div class="report-header">
+
+        <div>
+
+            <h2>Financial Reports</h2>
+
+            <p>
+                Generate professional financial reports for analysis,
+                record keeping and offline access.
+            </p>
+
+        </div>
+
+        <div>
+
+            <select id="reportPeriod"
+                class="form-select report-period">
+
+            <option value="this_month">This Month</option>
+
+            <option value="last_month">Last Month</option>
+
+            <option value="last_3_months">Last 3 Months</option>
+
+            <option value="this_year">This Year</option>
+
+            <option value="custom">Custom Range</option>
+
+        </select>
+
+        <div id="customRange" class="row mt-3" style="display: none;">
+
+            <div class="col-md-4">
+                <label>From</label>
+                <input type="date" id="fromDate" class="form-control">
+            </div>
+
+            <div class="col-md-4">
+                <label>To</label>
+                <input type="date" id="toDate" class="form-control">
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end">
+                <button id="applyFilter" class="btn btn-primary w-100">
+                    Apply
+                </button>
+            </div>
+
+        </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Report Center -->
+
+    <div class="section-title">
+
+        <h5>Report Center</h5>
+
+        <span>Generate a comprehensive financial report with a single click.</span>
+
+    </div>
+
+
+    <div class="row g-4">
+
+
+        <div class="row">
+
+            <div class="col-12">
+
+                <div class="report-card">
+
+                    <div class="icon blue">
+
+                        <i class="fas fa-file-lines"></i>
+
+                    </div>
+
+                    <div class="report-content">
+
+                        <h4>Comprehensive Financial Report</h4>
+
+                        <p>
+                            Generate a detailed financial report containing income,
+                            expenses, budgets, goals, investments, notifications,
+                            financial health and analytics for the selected period.
+                        </p>
+
+                        <button id="generateReport" class="generate-btn">
+
+                            <i class="fas fa-file-lines"></i>
+
+                            Generate Financial Report
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+
+{% endblock %}

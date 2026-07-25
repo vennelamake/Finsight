@@ -149,9 +149,9 @@
 
                             <td>{{ goal.goal_name }}</td>
 
-                            <td>₹{{ goal.target_amount }}</td>
+                            <td>{{ currency_symbol }}{{ "%.2f"|format(goal.converted_target) }}</td>
 
-                            <td>₹{{ goal.saved_amount }}</td>
+                            <td>{{ currency_symbol }}{{ "%.2f"|format(goal.converted_saved) }}</td>
 
                             <td>
 

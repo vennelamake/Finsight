@@ -1,36 +1,60 @@
+/* ==========================================================
+                    SIDEBAR
+========================================================== */
+
 body{
+
     margin:0;
+
     font-family:'Poppins',sans-serif;
-    background:#f5f7fb;
+
+    background:var(--bg);
+
+    color:var(--text);
+
 }
 
 .main-container{
+
     display:flex;
+
 }
+
+/* ==========================================================
+                    SIDEBAR
+========================================================== */
 
 .sidebar{
 
     width:260px;
-    height:100vh;
 
-    background:white;
+    height:100vh;
 
     position:fixed;
 
     left:0;
-    top:0;
 
-    border-right:1px solid #e5e7eb;
+    top:0;
 
     overflow-y:auto;
 
+    background:var(--card);
+
+    border-right:1px solid var(--border);
+
+    box-shadow:var(--shadow);
+
 }
+
+/* ==========================================================
+                    LOGO
+========================================================== */
 
 .logo{
 
     padding:25px;
 
-    border-bottom:1px solid #ececec;
+    border-bottom:1px solid var(--border);
 
 }
 
@@ -42,17 +66,23 @@ body{
 
     font-size:30px;
 
+    font-weight:700;
+
 }
 
 .logo p{
 
     margin-top:5px;
 
-    color:#888;
+    color:var(--text-secondary);
 
     font-size:13px;
 
 }
+
+/* ==========================================================
+                    NAVIGATION
+========================================================== */
 
 .sidebar ul{
 
@@ -82,7 +112,7 @@ body{
 
     text-decoration:none;
 
-    color:#374151;
+    color:var(--text);
 
     border-radius:12px;
 
@@ -102,7 +132,7 @@ body{
 
 .sidebar a:hover{
 
-    background:#edf4ff;
+    background:var(--hover);
 
     color:#2563eb;
 
@@ -112,19 +142,21 @@ body{
 
     background:#2563eb;
 
-    color:white;
+    color:#fff;
 
 }
 
-/* Monthly Overview */
+/* ==========================================================
+                    MONTHLY OVERVIEW
+========================================================== */
 
 .monthly-overview{
 
     margin:18px;
 
-    background:#f8fafc;
+    background:var(--hover);
 
-    border:1px solid #e5e7eb;
+    border:1px solid var(--border);
 
     border-radius:15px;
 
@@ -134,13 +166,15 @@ body{
 
 .monthly-overview h5{
 
+    color:var(--text);
+
     margin-bottom:5px;
 
 }
 
 .monthly-overview small{
 
-    color:#777;
+    color:var(--text-secondary);
 
 }
 
@@ -158,13 +192,15 @@ body{
 
 .overview-item strong{
 
-    color:#111827;
+    color:var(--text);
 
 }
 
 .monthly-overview .progress{
 
     height:10px;
+
+    background:var(--progress);
 
     margin-top:15px;
 
@@ -178,6 +214,10 @@ body{
 
 }
 
+/* ==========================================================
+                    CONTENT
+========================================================== */
+
 .content{
 
     margin-left:260px;
@@ -185,5 +225,69 @@ body{
     width:calc(100% - 260px);
 
     padding:25px;
+
+    color:var(--text);
+
+}
+
+/* ==========================================================
+                    DARK MODE FIXES
+========================================================== */
+
+body.dark .sidebar{
+
+    background:var(--card);
+
+    border-right:1px solid var(--border);
+
+}
+
+body.dark .sidebar a{
+
+    color:var(--text);
+
+}
+
+body.dark .sidebar a:hover{
+
+    background:var(--hover);
+
+    color:#2563eb;
+
+}
+
+body.dark .sidebar .active a{
+
+    background:#2563eb;
+
+    color:#fff;
+
+}
+
+body.dark .monthly-overview{
+
+    background:var(--hover);
+
+    border-color:var(--border);
+
+}
+
+body.dark .monthly-overview h5,
+
+body.dark .overview-item strong{
+
+    color:var(--text);
+
+}
+
+body.dark .monthly-overview small{
+
+    color:var(--text-secondary);
+
+}
+
+body.dark .content{
+
+    color:var(--text);
 
 }

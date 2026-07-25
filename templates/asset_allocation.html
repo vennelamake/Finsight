@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
     <meta charset="UTF-8">
 
@@ -20,17 +19,13 @@
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/investments.css') }}">
 
-</head>
-
-<body>
-
 <div class="container mt-4">
 
     {% include "includes/investment_navbar.html" %}
 
     <div class="card shadow-sm border-0">
 
-        <div class="card-header bg-white">
+        <div class="card-header">
 
             <h4>
 
@@ -134,7 +129,6 @@ new Chart(
 
         data: {
             labels: {{ labels|tojson }},
-
             datasets: [{
                 data: {{ values|tojson }}
             }]
@@ -145,6 +139,4 @@ new Chart(
 </script>
 
 {% endif %}
-</body>
-
-</html>
+{% endblock %}

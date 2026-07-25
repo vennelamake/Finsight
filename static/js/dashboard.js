@@ -1,6 +1,15 @@
-// ===============================
+// =====================================
+// Check Theme
+// =====================================
+
+const isDark = document.body.classList.contains("dark");
+
+const textColor = isDark ? "#f5f5f5" : "#374151";
+const gridColor = isDark ? "#444" : "#e5e7eb";
+
+// =====================================
 // Expense Breakdown Chart
-// ===============================
+// =====================================
 
 const expenseCanvas = document.getElementById("expenseChart");
 
@@ -43,7 +52,13 @@ if (expenseCanvas) {
 
                 legend: {
 
-                    position: "bottom"
+                    position: "bottom",
+
+                    labels: {
+
+                        color: textColor
+
+                    }
 
                 }
 
@@ -55,11 +70,9 @@ if (expenseCanvas) {
 
 }
 
-
-
-// ===============================
+// =====================================
 // Monthly Trend Chart
-// ===============================
+// =====================================
 
 const trendCanvas = document.getElementById("trendChart");
 
@@ -98,7 +111,7 @@ if (trendCanvas) {
                     data: trendExpense,
 
                     borderColor: "#ef4444",
-                    
+
                     backgroundColor: "rgba(239,68,68,0.15)",
 
                     fill: false,
@@ -119,7 +132,13 @@ if (trendCanvas) {
 
                 legend: {
 
-                    position: "bottom"
+                    position: "bottom",
+
+                    labels: {
+
+                        color: textColor
+
+                    }
 
                 }
 
@@ -127,9 +146,37 @@ if (trendCanvas) {
 
             scales: {
 
+                x: {
+
+                    ticks: {
+
+                        color: textColor
+
+                    },
+
+                    grid: {
+
+                        color: gridColor
+
+                    }
+
+                },
+
                 y: {
 
-                    beginAtZero: true
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        color: textColor
+
+                    },
+
+                    grid: {
+
+                        color: gridColor
+
+                    }
 
                 }
 

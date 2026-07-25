@@ -121,12 +121,21 @@
 
     color:#0d6efd;
 
-    background:white;
+    background:var(--card);
 
     border:none;
 
     border-bottom:3px solid #0d6efd;
 
+}
+
+body.dark .nav-tabs .nav-link.active{
+    background:transparent !important;
+}
+
+body.dark .card{
+    background:var(--card);
+    border-color:var(--border);
 }
 
 </style>

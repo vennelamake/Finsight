@@ -10,63 +10,63 @@
 
     <ul>
 
-        <li class="active">
+        <li class="{% if request.path == '/dashboard' %}active{% endif %}">
             <a href="/dashboard">
                 <i class="fa-solid fa-chart-line"></i>
                 Dashboard
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/expenses' %}active{% endif %}">
             <a href="/expenses">
                 <i class="fa-solid fa-wallet"></i>
                 Expenses
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/budgets' %}active{% endif %}">
             <a href="/budgets">
                 <i class="fa-solid fa-piggy-bank"></i>
                 Budgets
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/income' %}active{% endif %}">
             <a href="/income">
                 <i class="fa-solid fa-money-bill-wave"></i>
                 Income
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/investments' %}active{% endif %}">
             <a href="/investments">
                 <i class="fa-solid fa-chart-column"></i>
                 Investments
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/goals' %}active{% endif %}">
             <a href="/goals">
                 <i class="fa-solid fa-bullseye"></i>
                 Financial Goals
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/analytics' %}active{% endif %}">
             <a href="/analytics">
                 <i class="fa-solid fa-chart-pie"></i>
                 Analytics
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/reports' or request.path == '/reports/preview' %}active{% endif %}">
             <a href="/reports">
                 <i class="fa-solid fa-file-lines"></i>
                 Reports
             </a>
         </li>
 
-        <li>
+        <li class="{% if request.path == '/settings' %}active{% endif %}">
             <a href="/settings">
                 <i class="fa-solid fa-gear"></i>
                 Settings
@@ -85,7 +85,7 @@
 
             <span>Income</span>
 
-            <strong>₹{{ monthly_income }}</strong>
+            <strong>{{ currency_symbol }}{{ "%.2f"|format(monthly_income) }}</strong>
 
         </div>
 
@@ -93,7 +93,7 @@
 
             <span>Expenses</span>
 
-            <strong>₹{{ monthly_expense }}</strong>
+            <strong>{{ currency_symbol }}{{ "%.2f"|format(monthly_expense) }}</strong>
 
         </div>
 
@@ -101,7 +101,7 @@
 
             <span>Savings</span>
 
-            <strong>₹{{ monthly_savings }}</strong>
+            <strong>{{ currency_symbol }}{{ "%.2f"|format(monthly_savings) }}</strong>
 
         </div>
 

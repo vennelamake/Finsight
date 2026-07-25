@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
     <meta charset="UTF-8">
 
@@ -17,9 +16,7 @@
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/expenses.css') }}">
 
-</head>
 
-<body>
 
 <div class="container mt-5">
 
@@ -136,7 +133,7 @@
 
                     <tr>
 
-                        <td>₹{{ budget.budget_amount }}</td>
+                        <td>{{ currency_symbol }}{{ "%.2f"|format(budget.converted_amount) }}</td>
 
                         <td>{{ budget.budget_month }}</td>
 
@@ -186,6 +183,4 @@
 
 </div>
 
-</body>
-
-</html>
+{% endblock %}

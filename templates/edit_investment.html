@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
     <meta charset="UTF-8">
 
@@ -15,11 +14,6 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/investments.css') }}">
-
-</head>
-
-<body>
-
 <div class="container mt-5">
 
     <div class="expense-card">
@@ -112,6 +106,4 @@
 
 </div>
 
-</body>
-
-</html>
+{% endblock %}

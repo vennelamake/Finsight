@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layouts/base.html" %}
 
-<head>
+{% block content %}
 
 <meta charset="UTF-8">
 
@@ -21,13 +20,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 <style>
 
 body{
-    background:#f8f9fa;
+    background:var(--bg);
+    color:var(--text);
 }
 
 .dashboard-card{
-    border:none;
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
     border-radius:14px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    box-shadow:var(--shadow);
 }
 
 .summary-card{
@@ -46,11 +48,50 @@ body{
     margin-bottom:20px;
 }
 
+/* ===========================
+   DARK MODE
+=========================== */
+
+body.dark .card{
+    background:var(--card);
+    color:var(--text);
+    border-color:var(--border);
+}
+
+body.dark .card-body{
+    background:var(--card);
+    color:var(--text);
+}
+
+body.dark .card-header.bg-white{
+    background:var(--card) !important;
+    color:var(--text);
+}
+
+body.dark .table{
+    color:var(--text);
+}
+
+body.dark .table-light{
+    --bs-table-bg:#2b2b2b;
+    --bs-table-color:#fff;
+}
+
+body.dark .table-hover tbody tr:hover{
+    background:#2f2f2f;
+}
+
+body.dark .text-muted{
+    color:var(--text-secondary) !important;
+}
+
+body.dark .progress{
+    background:#3a3a3a;
+}
+
 </style>
 
-</head>
 
-<body>
 
 <div class="container-fluid py-4">
 
@@ -98,7 +139,7 @@ Average Monthly Income
 
 <h3 class="text-success mt-2">
 
-₹ {{ "%.2f"|format(avg_income) }}
+{{ currency_symbol }}{{ "%.2f"|format(avg_income) }}
 
 </h3>
 
@@ -122,7 +163,7 @@ Average Monthly Expense
 
 <h3 class="text-danger mt-2">
 
-₹ {{ "%.2f"|format(avg_expense) }}
+{{ currency_symbol }}{{ "%.2f"|format(avg_expense) }}
 
 </h3>
 
@@ -146,7 +187,7 @@ Average Monthly Savings
 
 <h3 class="text-primary mt-2">
 
-₹ {{ "%.2f"|format(avg_savings) }}
+{{ currency_symbol }}{{ "%.2f"|format(avg_savings) }}
 
 </h3>
 
@@ -170,7 +211,7 @@ Predicted Next Month Expense
 
 <h3 class="text-warning mt-2">
 
-₹ {{ "%.2f"|format(predicted_expense) }}
+{{ currency_symbol }}{{ "%.2f"|format(predicted_expense) }}
 
 </h3>
 
@@ -240,7 +281,7 @@ Predicted Next Month Expense
 
                 <h2 class="text-primary">
 
-                    ₹ {{ "%.2f"|format(predicted_expense) }}
+                    {{ currency_symbol }}{{ "%.2f"|format(predicted_expense) }}
 
                 </h2>
 
@@ -358,7 +399,7 @@ Predicted Next Month Expense
 
                     <strong class="text-primary">
 
-                        ₹ {{ "%.2f"|format(avg_savings) }}
+                        {{ currency_symbol }} {{ "%.2f"|format(avg_savings) }}
 
                     </strong>
 
@@ -398,7 +439,7 @@ Predicted Next Month Expense
 
                 <h3 class="text-success">
 
-                    ₹ {{ "%.2f"|format(avg_income) }}
+                    {{ currency_symbol }} {{ "%.2f"|format(avg_income) }}
 
                 </h3>
 
@@ -414,7 +455,7 @@ Predicted Next Month Expense
 
                 <h3 class="text-danger">
 
-                    ₹ {{ "%.2f"|format(avg_expense) }}
+                    {{ currency_symbol }} {{ "%.2f"|format(avg_expense) }}
 
                 </h3>
 
@@ -430,7 +471,7 @@ Predicted Next Month Expense
 
                 <h3 class="text-primary">
 
-                    ₹ {{ "%.2f"|format(avg_savings) }}
+                    {{ currency_symbol }} {{ "%.2f"|format(avg_savings) }}
 
                 </h3>
 
@@ -667,9 +708,11 @@ maintainAspectRatio:false,
 plugins:{
 
 legend:{
-
-position:"top"
-
+    position:"top",
+    labels:{
+        color:getComputedStyle(document.body)
+            .getPropertyValue('--text')
+    }
 }
 
 },
@@ -689,9 +732,8 @@ y:{
 beginAtZero:true,
 
 grid:{
-
-color:"#e9ecef"
-
+    color:getComputedStyle(document.body)
+        .getPropertyValue('--border')
 }
 
 },
@@ -718,6 +760,4 @@ display:false
 
 </div>
 
-</body>
-
-</html>
+{% endblock %}

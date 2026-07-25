@@ -1,0 +1,528 @@
+/* =====================================================
+                    REPORTS PAGE
+===================================================== */
+
+.reports-page,
+.report-preview-page{
+
+    padding:30px;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    min-height:100vh;
+
+}
+
+/* =====================================================
+                    HEADER
+===================================================== */
+
+.report-header,
+.preview-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    margin-bottom:30px;
+
+}
+
+.report-header h2,
+.preview-header h2{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin-bottom:8px;
+
+}
+
+.report-header p,
+.preview-header p{
+
+    color:var(--text-secondary);
+
+    margin:0;
+
+}
+
+.report-period{
+
+    width:220px;
+
+    border-radius:10px;
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+}
+
+/* =====================================================
+                    SECTION TITLE
+===================================================== */
+
+.section-title{
+
+    margin-top:15px;
+
+    margin-bottom:35px;
+
+}
+
+.section-title h5{
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin-bottom:4px;
+
+}
+
+.section-title span{
+
+    display:block;
+
+    color:var(--text-secondary);
+
+    font-size:14px;
+
+    margin-bottom:16px;
+
+}
+
+/* =====================================================
+                    REPORT CARD
+===================================================== */
+
+.report-card{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:var(--shadow);
+
+    transition:.3s;
+
+    height:100%;
+
+}
+
+.report-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.report-card h4{
+
+    font-size:20px;
+
+    font-weight:600;
+
+    margin-bottom:12px;
+
+    color:var(--text);
+
+}
+
+.report-card p{
+
+    color:var(--text-secondary);
+
+    line-height:1.7;
+
+}
+
+/* =====================================================
+                    ICONS
+===================================================== */
+
+.icon{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:24px;
+
+    margin-bottom:18px;
+
+}
+
+.blue{ background:#2563eb; }
+
+.green{ background:#16a34a; }
+
+.orange{ background:#ea580c; }
+
+.purple{ background:#7c3aed; }
+
+/* =====================================================
+                    BUTTONS
+===================================================== */
+
+.generate-btn,
+.export-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 20px;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.generate-btn{
+
+    background:#2563eb;
+
+    color:#fff;
+
+}
+
+.generate-btn:hover{
+
+    background:#1d4ed8;
+
+    color:#fff;
+
+}
+
+.export-btn{
+
+    background:#0f172a;
+
+    color:#fff;
+
+}
+
+.export-btn:hover{
+
+    background:#1e293b;
+
+    color:#fff;
+
+}
+
+/* =====================================================
+                    EXPORT CARDS
+===================================================== */
+
+.export-card{
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:30px;
+
+    text-align:center;
+
+    box-shadow:var(--shadow);
+
+    transition:.3s;
+
+    height:100%;
+
+}
+
+.export-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.export-card i{
+
+    font-size:45px;
+
+    color:#2563eb;
+
+    margin-bottom:18px;
+
+}
+
+.export-card h5{
+
+    color:var(--text);
+
+    font-weight:600;
+
+}
+
+.export-card p{
+
+    color:var(--text-secondary);
+
+    min-height:60px;
+
+}
+
+/* =====================================================
+                    RECENT REPORTS
+===================================================== */
+
+.recent-report-box{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow);
+
+    overflow:hidden;
+
+}
+
+.recent-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 25px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.recent-item:last-child{
+
+    border-bottom:none;
+
+}
+
+.recent-item h6{
+
+    color:var(--text);
+
+    margin-bottom:4px;
+
+    font-weight:600;
+
+}
+
+.recent-item small{
+
+    color:var(--text-secondary);
+
+}
+
+/* =====================================================
+                    REPORT PREVIEW
+===================================================== */
+
+.card-header{
+
+    background:var(--card);
+
+    border-bottom:1px solid var(--border);
+
+    padding:20px 25px;
+
+}
+
+.card-header h5{
+
+    color:var(--text);
+
+    margin:0;
+
+    font-weight:700;
+
+}
+
+.card-body{
+
+    color:var(--text);
+
+    padding:25px;
+
+}
+
+.card-body label{
+
+    color:var(--text-secondary);
+
+    font-size:13px;
+
+    margin-bottom:4px;
+
+    display:block;
+
+}
+
+/* =====================================================
+                    SUMMARY BOX
+===================================================== */
+
+.summary-box{
+
+    background:var(--hover);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    padding:18px;
+
+}
+
+.summary-box span{
+
+    color:var(--text-secondary);
+
+    font-size:13px;
+
+}
+
+.summary-box h3,
+.summary-box h4{
+
+    color:var(--text);
+
+    margin-top:8px;
+
+    font-weight:700;
+
+}
+
+/* =====================================================
+                    TABLE
+===================================================== */
+
+.table thead{
+
+    background:var(--hover);
+
+}
+
+.table th{
+
+    color:var(--text);
+
+}
+
+.table td{
+
+    color:var(--text);
+
+}
+
+/* =====================================================
+                    EXPORT SECTION
+===================================================== */
+
+.export-section{
+
+    margin-bottom:40px;
+
+}
+
+/* =====================================================
+                    RESPONSIVE
+===================================================== */
+
+@media(max-width:992px){
+
+.report-header,
+.preview-header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:20px;
+
+}
+
+.report-period{
+
+    width:100%;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.reports-page,
+.report-preview-page{
+
+    padding:20px;
+
+}
+
+.report-header h2,
+.preview-header h2{
+
+    font-size:24px;
+
+}
+
+.summary-box{
+
+    margin-bottom:15px;
+
+}
+
+.recent-item{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+}
+
+}
