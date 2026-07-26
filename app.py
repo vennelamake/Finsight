@@ -25,6 +25,8 @@ from services.notification_service import (
     generate_spending_insights,
 )
 from services.csv_import import import_transactions
+from services.image_import import extract_transactions
+import os
 
 from flask import send_file
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
@@ -5160,6 +5162,109 @@ def import_transactions_page():
         return redirect(url_for("import_transactions_page"))
 
     return render_template("import_transactions.html")
+
+
+@app.route("/test-image", methods=["GET", "POST"])
+def test_image():
+
+    if request.method == "POST":
+
+        image = request.files["statement_image"]
+
+        upload_folder = "uploads"
+        os.makedirs(upload_folder, exist_ok=True)
+
+        image_path = os.path.join(upload_folder, image.filename)
+
+        image.save(image_path)
+
+        text = extract_transactions(image_path)
+
+        return "<br>".join(text)
+
+    return """
+    <h2>OCR Test</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="file" name="statement_image" required>
+
+        <br><br>
+
+        <button type="submit">Upload</button>
+
+    </form>
+    """
+@app.route("/import-image", methods=["POST"])
+@login_required
+def import_image():
+
+    image = request.files["statement_image"]
+
+    upload_folder = "uploads"
+    os.makedirs(upload_folder, exist_ok=True)
+
+    image_path = os.path.join(upload_folder, image.filename)
+
+    image.save(image_path)
+
+    transactions = extract_transactions(image_path)
+
+    return render_template(
+        "image_preview.html",
+        transactions=transactions
+    )
+
+@app.route("/save-image-transactions", methods=["POST"])
+@login_required
+def save_image_transactions():
+
+    print("SAVE ROUTE HIT")
+
+    dates = request.form.getlist("date")
+    types = request.form.getlist("type")
+    descriptions = request.form.getlist("description")
+    amounts = request.form.getlist("amount")
+
+    for i in range(len(dates)):
+
+        amount = float(amounts[i].replace(",", ""))
+
+        tx_date = datetime.strptime(
+            dates[i],
+            "%d/%m/%Y"
+        ).date()
+
+        if types[i] == "DEP TFR":
+
+            income = Income(
+                user_id=current_user.id,
+                source="Bank Transfer",
+                amount=amount,
+                income_date=tx_date,
+                description=descriptions[i]
+            )
+
+            db.session.add(income)
+
+        else:
+
+            expense = Expense(
+                user_id=current_user.id,
+                category="Others",
+                amount=amount,
+                description=descriptions[i],
+                payment_method="Bank",
+                expense_date=tx_date
+            )
+
+            db.session.add(expense)
+
+    db.session.commit()
+
+    flash("Transactions imported successfully!", "success")
+
+    return redirect(url_for("import_transactions_page"))
 # -------------------------
 # CREATE DATABASE TABLES
 # -------------------------

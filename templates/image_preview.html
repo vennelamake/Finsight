@@ -1,0 +1,94 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>OCR Transaction Preview</h2>
+
+    {% if transactions %}
+
+    <table class="table table-bordered table-striped">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Balance</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for t in transactions %}
+
+            <tr>
+
+                <td>{{ t.date }}</td>
+
+                <td>
+                    {% if t.type == "DEP TFR" %}
+                        <span class="badge bg-success">Income</span>
+                    {% else %}
+                        <span class="badge bg-danger">Expense</span>
+                    {% endif %}
+                </td>
+
+                <td>{{ t.description }}</td>
+
+                <td>{{ t.amount }}</td>
+
+                <td>{{ t.balance }}</td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <form action="/save-image-transactions" method="POST">
+
+        {% for t in transactions %}
+
+        <input type="hidden" name="date" value="{{ t.date }}">
+        <input type="hidden" name="type" value="{{ t.type }}">
+        <input type="hidden" name="description" value="{{ t.description }}">
+        <input type="hidden" name="amount" value="{{ t.amount }}">
+        
+
+        {% endfor %}
+
+        <button class="btn btn-success">
+            Save Transactions
+        </button>
+
+    </form>
+
+    <br>
+    <div class="mt-3">
+        <a href="/import-transactions" class="btn btn-secondary">
+            Back
+        </a>
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-warning">
+        No transactions detected from the uploaded image.
+    </div>
+
+    <a href="/import-transactions" class="btn btn-secondary">
+        Back
+    </a>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
