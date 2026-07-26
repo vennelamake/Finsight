@@ -206,7 +206,7 @@ http://127.0.0.1:5000
 
 # 👩‍💻 Author
 
-**MAKE SRI VIJAYA RAJESWARI**
+**MAKE SRI VIJAYA VENNELA RAJESWARI**
 
 B.Tech – Computer Science Engineering
 
