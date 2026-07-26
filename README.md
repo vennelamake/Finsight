@@ -1,54 +1,74 @@
-# 💰 FinSight
+# 💰 FinSight – Smart Personal Finance Management System
 
-FinSight is a personal finance management web application built using **Flask** and **MySQL**. It helps users organize their finances by tracking income, expenses, budgets, investments, and financial goals from a single dashboard.
+FinSight is a comprehensive personal finance management web application developed using **Flask**, **Python**, and **MySQL**. It helps users efficiently manage their finances by tracking income, expenses, budgets, investments, financial goals, and savings from a single dashboard.
 
-Along with basic financial management, FinSight provides visual analytics, spending insights, budget recommendations, trend analysis, and a financial health score to help users understand their financial habits and make better decisions.
+The application also provides intelligent financial insights through spending analysis, budget recommendations, financial health evaluation, trend analysis, OCR-based bank statement import, CSV transaction import, and investment portfolio monitoring, enabling users to make informed financial decisions.
 
 ---
 
-## Features
+# ✨ Features
 
-### 🔐 Authentication
-- User Registration
-- Secure Login & Logout
-- Session Management
+## 🔐 User Authentication
+- Secure user registration and login
+- Session management using Flask-Login
+- Password hashing for enhanced security
 
-### 💵 Income Management
-- Add income records
-- Update and delete income
+## 💰 Income Management
+- Add, edit, and delete income records
 - View complete income history
+- Categorize different income sources
 
-### 💸 Expense Management
-- Add daily expenses
+## 💸 Expense Management
+- Record daily expenses
 - Categorize expenses
 - Edit and delete expense records
-- View expense history
+- View complete expense history
 
-### 📊 Budget Management
-- Create budgets
+## 📊 Budget Management
+- Create monthly budgets
 - Track budget utilization
 - Monitor overspending
+- Budget recommendations
 
-### 📈 Investment Management
-- Add investments
-- Track investment portfolio
-- Monitor investment performance
-
-### 🎯 Financial Goals
+## 🎯 Financial Goals
 - Create financial goals
-- Track goal progress
-- View completed goals
+- Track savings progress
+- Monitor completed goals
 
-### 📉 Analytics
+## 📈 Investment Portfolio
+- Add investment details
+- Record investment transactions
+- Track portfolio performance
+
+## 📉 Analytics Dashboard
 - Financial Overview
-- Spending Analysis
-- Budget Recommendations
-- Trends & Predictions
+- Income vs Expense Analysis
+- Category-wise Spending Analysis
+- Monthly Expense Trends
+- Budget Utilization
 - Financial Health Score
+
+## 🧠 Smart Financial Insights
+- Spending pattern analysis
+- Savings suggestions
+- Budget recommendations
+- Financial health evaluation
+- Personalized insights
+
+## 📂 Transaction Import
+- Import transactions using CSV files
+- OCR-based bank statement image import
+- Preview transactions before saving
+
+## 🔔 Notifications
+- Budget alerts
+- Savings reminders
+- Goal notifications
+- Financial health alerts
 
 ---
 
-# Tech Stack
+# 🛠 Tech Stack
 
 ### Frontend
 - HTML5
@@ -69,30 +89,30 @@ Along with basic financial management, FinSight provides visual analytics, spend
 ### Authentication
 - Flask-Login
 
+### Additional Libraries
+- EasyOCR
+- OpenCV
+- Pandas
+- Matplotlib
+
 ---
 
-# Project Structure
+# 📁 Project Structure
 
-```
+```text
 FinSight/
 │
 ├── database/
-│
 ├── models/
-│
 ├── routes/
-│
+├── services/
 ├── static/
 │   ├── css/
 │   ├── js/
 │   └── images/
-│
 ├── templates/
-│
 ├── uploads/
-│
 ├── utils/
-│
 ├── app.py
 ├── config.py
 ├── extensions.py
@@ -103,25 +123,27 @@ FinSight/
 
 ---
 
-# Installation
+# 🚀 Installation
 
-### Clone the repository
+Clone the repository
 
 ```bash
 git clone https://github.com/vennelamake/FinSight.git
 ```
 
+Move into the project folder
+
 ```bash
 cd FinSight
 ```
 
-### Create a virtual environment
+Create a virtual environment
 
 ```bash
 python -m venv .venv
 ```
 
-### Activate the environment
+Activate the virtual environment
 
 Windows
 
@@ -129,13 +151,15 @@ Windows
 .venv\Scripts\activate
 ```
 
-### Configure the database
+Install the required dependencies
 
-Update your MySQL configuration in `config.py`.
+```bash
+pip install -r requirements.txt
+```
 
-Create the database.
+Configure your MySQL database in **config.py**.
 
-Run the project.
+Run the application
 
 ```bash
 python app.py
@@ -143,35 +167,51 @@ python app.py
 
 Open your browser and visit
 
-```
+```text
 http://127.0.0.1:5000
 ```
 
 ---
 
-# Project Modules
+# 📊 Project Modules
 
 - Dashboard
+- User Authentication
 - Income Management
 - Expense Management
 - Budget Management
-- Investment Management
 - Financial Goals
-- Analytics Dashboard
+- Investment Portfolio
+- Financial Analytics
 - Spending Analysis
 - Budget Recommendations
-- Trends & Predictions
 - Financial Health Score
+- Notifications
+- CSV Transaction Import
+- OCR Bank Statement Import
 
+---
 
-# Author
+# 🔮 Future Enhancements
 
-**MAKE SRI VIJAYA VENNELA RAJESWARI**
+- Mobile Application
+- Cloud Deployment
+- AI-powered Financial Assistant
+- Bill Payment Reminders
+- Multi-bank Integration
+- Expense Prediction using Machine Learning
+- Family Finance Management
+
+---
+
+# 👩‍💻 Author
+
+**MAKE SRI VIJAYA RAJESWARI**
 
 B.Tech – Computer Science Engineering
 
 ---
 
-## License
+# 📄 License
 
-This project was developed for learning and educational purposes.
+This project is developed for educational and learning purposes.
