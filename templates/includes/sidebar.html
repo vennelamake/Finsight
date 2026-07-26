@@ -59,6 +59,13 @@
             </a>
         </li>
 
+        <li class="{% if request.path == '/import-transactions' %}active{% endif %}">
+            <a href="{{ url_for('import_transactions_page') }}">
+                <i class="fa-solid fa-file-import"></i>
+                Import Transactions
+            </a>
+        </li>
+
         <li class="{% if request.path == '/reports' or request.path == '/reports/preview' %}active{% endif %}">
             <a href="/reports">
                 <i class="fa-solid fa-file-lines"></i>

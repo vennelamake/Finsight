@@ -24,7 +24,7 @@ from services.notification_service import (
     generate_financial_health_notifications,
     generate_spending_insights,
 )
-
+from services.csv_import import import_transactions
 
 from flask import send_file
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
@@ -151,14 +151,14 @@ def dashboard():
     if monthly_income is None:
         monthly_income = 0
 
-    latest_budget = Budget.query.filter_by(
-        user_id=current_user.user_id
-    ).order_by(
-        Budget.created_at.desc()
+    current_budget = Budget.query.filter_by(
+        user_id=current_user.user_id,
+        budget_month=today.strftime("%B"),
+        budget_year=str(today.year)
     ).first()
 
-    if latest_budget:
-        budget = latest_budget.budget_amount
+    if current_budget:
+        budget = current_budget.budget_amount
     else:
         budget = 0
 
@@ -5126,6 +5126,40 @@ def inject_theme():
             return {"theme": settings.theme}
 
     return {"theme": "light"}
+
+
+@app.route("/import-transactions", methods=["GET", "POST"])
+@login_required
+def import_transactions_page():
+
+    if request.method == "POST":
+
+        file = request.files.get("csv_file")
+
+        if not file:
+            flash("Please select a CSV file.", "danger")
+            return redirect(url_for("import_transactions_page"))
+
+        success, result = import_transactions(file, current_user)
+
+        if success:
+
+            generate_budget_notifications(current_user.user_id)
+            generate_income_notifications(current_user.user_id)
+            generate_expense_notifications(current_user.user_id)
+            generate_savings_notifications(current_user.user_id)
+            generate_financial_health_notifications(current_user.user_id)
+            generate_spending_insights(current_user.user_id)
+
+            flash(f"{result} transactions imported successfully!", "success")
+
+        else:
+
+            flash(result, "danger")
+
+        return redirect(url_for("import_transactions_page"))
+
+    return render_template("import_transactions.html")
 # -------------------------
 # CREATE DATABASE TABLES
 # -------------------------
