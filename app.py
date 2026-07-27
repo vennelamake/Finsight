@@ -2664,17 +2664,28 @@ def report_preview():
             investment.quantity * investment.current_price
         )
 
-    report["currency_symbol"] = get_currency_symbol()
     return render_template(
         "report_preview.html",
-        **report
+        **report,
+        period=period,
+        from_date=from_date,
+        to_date=to_date
     )
 
 @app.route("/reports/export/pdf")
 @login_required
 def export_pdf():
 
-    report = get_report_data(current_user.user_id)
+    period = request.args.get("period", "this_month")
+    from_date = request.args.get("from_date")
+    to_date = request.args.get("to_date")
+
+    report = get_report_data(
+        current_user.user_id,
+        period,
+        from_date,
+        to_date
+    )
 
     buffer = BytesIO()
 
@@ -3084,7 +3095,16 @@ def export_pdf():
 @login_required
 def export_excel():
 
-    report = get_report_data(current_user.user_id)
+    period = request.args.get("period", "this_month")
+    from_date = request.args.get("from_date")
+    to_date = request.args.get("to_date")
+
+    report = get_report_data(
+        current_user.user_id,
+        period,
+        from_date,
+        to_date
+    )
 
     wb = Workbook()
 
